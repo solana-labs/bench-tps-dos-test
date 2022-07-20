@@ -2,8 +2,8 @@
 source ~/.bashrc
 source ~/.profile
 cd ~
-if [[ -d "bench-tps-dos-run" ]];then
-    rm  "bench-tps-dos-run"
+if [[ -d "bench-tps-dos-test" ]];then
+    rm  "bench-tps-dos-test"
 fi
 if [[ -f "start-build-solana.sh" ]];then
     rm  "start-build-solana.sh"

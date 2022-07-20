@@ -6,7 +6,7 @@ declare -a instance_zone
 
 # change directory to bench-tps-dos dir
 base_dir=$PWD
-dos_run_dir=$base_dir/bench-tps-dos-run
+dos_run_dir=$base_dir/bench-tps-dos
 cd $dos_run_dir
 
 # prepare ENV
@@ -109,8 +109,8 @@ if [[ -f "exec-start-dos-test.sh" ]];then
 fi
 # add git repo to exe-start-template
 echo "git clone https://github.com/solana-labs/bench-tps-dos-test.git" >> exec-start-template.sh
-echo 'cp ~/cluster-ops/bench-tps-dos-run/start-build-solana.sh .' >> exec-start-template.sh
-echo 'cp ~/cluster-ops/bench-tps-dos-run/start-dos-test.sh .' >> exec-start-template.sh
+echo 'cp ~/bench-tps-dos-test/start-build-solana.sh .' >> exec-start-template.sh
+echo 'cp ~/bench-tps-dos-test/start-dos-test.sh .' >> exec-start-template.sh
 
 
 if [[ ! "$BUILD_SOLANA" ]];then

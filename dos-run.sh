@@ -4,11 +4,6 @@ declare -a instance_ip
 declare -a instance_name
 declare -a instance_zone
 
-# change directory to bench-tps-dos dir
-base_dir=$PWD
-dos_run_dir=$base_dir/bench-tps-dos
-cd $dos_run_dir
-
 # prepare ENV
 if [[ ! "$GIT_TOKEN" ]];then
 	echo GIT_TOKEN env not found, exit

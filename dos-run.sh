@@ -108,7 +108,7 @@ if [[ -f "exec-start-dos-test.sh" ]];then
     rm exec-start-dos-test.sh
 fi
 # add git repo to exe-start-template
-echo "git clone https://${GIT_TOKEN}@github.com/solana-labs/cluster-ops.git" >> exec-start-template.sh
+echo "git clone https://github.com/solana-labs/bench-tps-dos-test.git" >> exec-start-template.sh
 echo 'cp ~/cluster-ops/bench-tps-dos-run/start-build-solana.sh .' >> exec-start-template.sh
 echo 'cp ~/cluster-ops/bench-tps-dos-run/start-dos-test.sh .' >> exec-start-template.sh
 

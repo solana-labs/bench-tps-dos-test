@@ -23,7 +23,10 @@ if [[ ! "$SLACK_WEBHOOK" ]];then
 	echo SLACK_WEBHOOK env not found, exit
 	exit 1
 fi
-
+if [[ ! "$SOLANA_BUILD_VER" ]];then
+	SOLANA_BUILD_VER=same-as-cluster
+	echo SOLANA_BUILD_VER env not found, use $SOLANA_BUILD_VER
+fi
 get_time_after() {
 	outcom_in_sec=$(echo ${given_ts} + ${add_secs} | bc) 
 }
@@ -123,6 +126,10 @@ if [[ -d solana ]];then
 else 
 	exit 1
 fi
+if [[ "$SOLANA_BUILD_VER"=="same-as-cluster" ]];then
+	SOLANA_BUILD_VER=$TESTNET_VER
+fi
+
 echo ----- stage: prepare execute scripts ------
 file_in_bucket=id_ed25519_dos_test
 download_file
@@ -158,7 +165,7 @@ if [[ "$BUILD_SOLANA" == "true" ]];then
 		rm  exec-start-build-solana.sh 
 	fi
 	sed  -e 19a\\"export CHANNEL=$CHANNEL" exec-start-template.sh > exec-start-build-solana.sh 
-	echo "export TESTNET_VER=$TESTNET_VER" >> exec-start-build-solana.sh
+	echo "export BUILD_VER=$SOLANA_BUILD_VER" >> exec-start-build-solana.sh
 	chmod +x exec-start-build-solana.sh
 	cat exec-start-build-solana.sh
 	if [[ ! -f "exec-start-build-solana.sh" ]];then

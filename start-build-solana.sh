@@ -3,8 +3,8 @@
 set -ex
 base=$(pwd)
 ## Check ENV
-if [[ ! "$TESTNET_VER" ]];then 
-    echo No TESTNET_VER Env, use $TESTNET_VER and exit >> env.output
+if [[ ! "$BUILD_VER" ]];then 
+    echo No BUILD_VER Env and exit >> env.output
     exit 1
 fi
 if [[ ! "$CHANNEL" ]];then
@@ -19,7 +19,7 @@ fi
 # Printout Env
 echo CHANNEL: $CHANNEL 
 echo RUST_VER: $RUST_VER
-echo TESTNET_VER: $TESTNET_VER
+echo BUILD_VER: $BUILD_VER
 
 ## pre-install and rust version
 sudo apt-get install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler
@@ -39,7 +39,7 @@ fi
 
 git clone $repo
 cd $base/solana
-git checkout $TESTNET_VER
+git checkout $BUILD_VER
 # install solana in  /solana/ci
 cd $base/solana/ci
 res=$(CI_OS_NAME=linux DO_NOT_PUBLISH_TAR=true CHANNEL=$CHANNEL ./publish-tarball.sh)

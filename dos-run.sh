@@ -32,6 +32,7 @@ get_time_before() {
 	outcom_in_sec=$(echo ${given_ts} - ${minus_secs} | bc) 
 }
 
+
 download_file() {
 	for retry in 0 1
 	do
@@ -47,6 +48,31 @@ download_file() {
 			break
 		fi
 	done
+}
+
+function get_testnet_ver() {
+    local ret
+    for retry in 0 1 2
+    do
+        if [[ $retry -gt 1 ]];then
+            break
+        fi
+        ret=$(curl $ENDPOINT -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":1, "method":"getVersion"}
+        ' | jq '.result."solana-core"' | sed 's/\"//g') || true
+        echo get_testnet_ver ret: $ret
+        if [[ $ret =~ [0-9]+.[0-9]+.[0-9]+ ]];then
+            echo get version
+            break
+        fi
+        sleep 3
+    done
+    if [[ ! $ret =~ ^[0-9]+.[0-9]+.[0-9]+ ]];then
+        testnet_ver=master
+        break
+    else
+        #adding a v because the branch has a v
+        testnet_ver=$(echo v$ret)
+    fi
 }
 
 create_gce() {
@@ -82,10 +108,24 @@ create_gce() {
 }
 
 ### Main ###
+echo ----- stage: get cluster version and git information --- 
+get_testnet_ver
+TESTNET_VER=$testnet_ver
+if [[ -d "./solana" ]];then
+    rm -rf solana
+fi
+ret=$(git clone https://github.com/solana-labs/solana.git)
+if [[ -d solana ]];then
+	cd ./solana
+	ret=$(git checkout $TESTNET_VER)
+	GIT_COMMIT=$(git rev-parse HEAD)
+	cd ../
+else 
+	exit 1
+fi
 echo ----- stage: prepare execute scripts ------
 file_in_bucket=id_ed25519_dos_test
 download_file
-
 
 if [[ ! -f "id_ed25519_dos_test" ]];then
 	echo "no id_ed25519_dos_test found"
@@ -106,8 +146,6 @@ fi
 echo "git clone https://github.com/solana-labs/bench-tps-dos-test.git" >> exec-start-template.sh
 echo 'cp ~/bench-tps-dos-test/start-build-solana.sh .' >> exec-start-template.sh
 echo 'cp ~/bench-tps-dos-test/start-dos-test.sh .' >> exec-start-template.sh
-
-
 if [[ ! "$BUILD_SOLANA" ]];then
 	BUILD_SOLANA="false"
 fi
@@ -120,6 +158,7 @@ if [[ "$BUILD_SOLANA" == "true" ]];then
 		rm  exec-start-build-solana.sh 
 	fi
 	sed  -e 19a\\"export CHANNEL=$CHANNEL" exec-start-template.sh > exec-start-build-solana.sh 
+	echo "export TESTNET_VER=$TESTNET_VER" >> exec-start-build-solana.sh
 	chmod +x exec-start-build-solana.sh
 	cat exec-start-build-solana.sh
 	if [[ ! -f "exec-start-build-solana.sh" ]];then
@@ -225,7 +264,6 @@ echo ----- stage: DOS report ------
 if [[ -f "dos-report-env.sh" ]];then
     rm dos-report-env.sh
 fi
-
 file_in_bucket=dos-report-env.sh
 download_file
 if [[ ! -f "dos-report-env.sh" ]];then
@@ -243,12 +281,8 @@ if [[ "$TPU_USE_QUIC" == "true" ]];then
 else 
 	echo "TEST_TYPE=UDP" >> dos-report-env.sh
 fi
-if [[ "$GIT_COMMIT" ]];then
-	echo "GIT_COMMIT=$GIT_COMMIT" >> dos-report-env.sh
-fi
-if [[ "$CLUSTER_VERSION" ]];then
-	echo "CLUSTER_VERSION=$CLUSTER_VERSION" >> dos-report-env.sh
-fi
+echo "CLUSTER_VERSION=$TESTNET_VER" >> dos-report-env.sh
+echo "GIT_COMMIT=$GIT_COMMIT" >> dos-report-env.sh
 echo "NUM_CLIENT=$NUM_CLIENT" >> dos-report-env.sh
 if [[ ! "$KEYPAIR_FILE" ]];then # use default
     KEYPAIR_FILE=large-keypairs.yaml

@@ -151,6 +151,7 @@ if [[ -f "exec-start-dos-test.sh" ]];then
 fi
 # add git repo to exe-start-template
 echo "git clone https://github.com/solana-labs/bench-tps-dos-test.git" >> exec-start-template.sh
+echo "git checkout $BUILDKITE_BRANCH" >> exec-start-template.sh
 echo 'cp ~/bench-tps-dos-test/start-build-solana.sh .' >> exec-start-template.sh
 echo 'cp ~/bench-tps-dos-test/start-dos-test.sh .' >> exec-start-template.sh
 if [[ ! "$BUILD_SOLANA" ]];then

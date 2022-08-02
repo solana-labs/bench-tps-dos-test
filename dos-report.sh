@@ -330,7 +330,7 @@ blocks_fill_90_percent_txt="blocks_90_full: $percent_value"
 gf_from=$(echo "scale=2;${start_time}*1000-28800*1000" | bc)
 gf_to=$(echo "scale=2;${stop_time}*1000-28800*1000" | bc)
 gf_prefix="https://metrics.solana.com:3000/d/monitor-edge/cluster-telemetry-edge?orgId=1&var-datasource=InfluxDB-testnet&var-testnet=tds&var-hostid=All&from="
-printf -v gf_url "%s%s%s%s" $gf_prefix $gf_from "&to" $gf_to
+printf -v gf_url "%s%s%s%s" $gf_prefix $gf_from "&to=" $gf_to
 ## Construct Test_Configuration
 printf -v test_config "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n" \
 		"test-type = $test_type" "client = $client" "commit = $git_commit" \

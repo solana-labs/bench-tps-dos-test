@@ -114,7 +114,7 @@ create_gce() {
 echo ----- stage: get cluster version and git information --- 
 get_testnet_ver
 TESTNET_VER=$testnet_ver
-if [[ "$SOLANA_BUILD_VER"=="same-as-cluster" ]];then
+if [[ "$SOLANA_BUILD_VER" == "same-as-cluster" ]];then
 	SOLANA_BUILD_VER=$TESTNET_VER
 fi
 if [[ -d "./solana" ]];then
@@ -338,4 +338,4 @@ do
 	gcloud compute instances delete --quiet ${instance_name[$idx]} --zone=${instance_zone[$idx]}
 	echo delete $vms
 done
-
+exit 0

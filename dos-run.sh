@@ -114,21 +114,23 @@ create_gce() {
 echo ----- stage: get cluster version and git information --- 
 get_testnet_ver
 TESTNET_VER=$testnet_ver
+if [[ "$SOLANA_BUILD_VER"=="same-as-cluster" ]];then
+	SOLANA_BUILD_VER=$TESTNET_VER
+fi
 if [[ -d "./solana" ]];then
     rm -rf solana
 fi
 ret=$(git clone https://github.com/solana-labs/solana.git)
 if [[ -d solana ]];then
 	cd ./solana
-	ret=$(git checkout $TESTNET_VER)
+	ret=$(git checkout $SOLANA_BUILD_VER)
 	GIT_COMMIT=$(git rev-parse HEAD)
 	cd ../
-else 
+else
+	echo "can not clone https://github.com/solana-labs/solana.git"
 	exit 1
 fi
-if [[ "$SOLANA_BUILD_VER"=="same-as-cluster" ]];then
-	SOLANA_BUILD_VER=$TESTNET_VER
-fi
+
 
 echo ----- stage: prepare execute scripts ------
 file_in_bucket=id_ed25519_dos_test
@@ -166,7 +168,7 @@ if [[ "$BUILD_SOLANA" == "true" ]];then
 		rm  exec-start-build-solana.sh 
 	fi
 	sed  -e 19a\\"export CHANNEL=$CHANNEL" exec-start-template.sh > exec-start-build-solana.sh 
-	echo "export BUILD_VER=$SOLANA_BUILD_VER" >> exec-start-build-solana.sh
+	echo "export SOLANA_BUILD_VER=$SOLANA_BUILD_VER" >> exec-start-build-solana.sh
 	chmod +x exec-start-build-solana.sh
 	cat exec-start-build-solana.sh
 	if [[ ! -f "exec-start-build-solana.sh" ]];then
@@ -257,11 +259,11 @@ do
 done
 
 echo ----- stage: wait for benchmark to end ------
-sleep_time=$(echo "$DURATION+10" | bc)
+sleep_time=$(echo "$DURATION+2" | bc)
 sleep $sleep_time
 
 ### Get Time Stop
-adjust_ts=15
+adjust_ts=10
 stop_time=$(echo `date -u +%s`)
 given_ts=$stop_time
 minus_secs=$adjust_ts

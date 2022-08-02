@@ -22,7 +22,7 @@ This is a implementation for
 ```
 + Mandatory: ENDPOINT / NUM_CLIENT / SLACK_WEBHOOK
 + BUILD_SOLANA: "true" to build bench-tps from solana source
-+ BUILD_VER: the version to build solana (default:same-as-cluster/master/v1.10.32...etc.)
++ SOLANA_BUILD_VER: git checkout branch/version to build solana (same-as-cluster/master/v1.10.32/10.1 ...etc.) default: same-as-cluster
 + AVAILABLE_ZONE: zones to create google cloud instance. (Be aware of quota issue)
 + NUM_CLIENT: 10 (default 10 for QUIC & 1 for UDP)
 + USE_TPU_CLIENT/TPU_USE_QUIC/DURATION/TX_COUNT/SUSTAINED arguments for bench-tps

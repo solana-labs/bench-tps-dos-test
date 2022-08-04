@@ -21,6 +21,14 @@ b1="{
 					\"text\": \"Grafana\"
 				},
 				\"url\": \"${gf_url}\"
+			},
+			{
+				\"type\": \"button\",
+				\"text\": {
+					\"type\": \"plain_text\",
+					\"text\": \"Buildkite Job\"
+				},
+				\"url\": \"${BUILDKITE_BUILD_URL}\"
 			}
 		]
 	}"

@@ -83,6 +83,14 @@ if [[ ! $THREAD_BATCH_SLEEP_MS ]];then
 	THREAD_BATCH_SLEEP_MS="NA"
 	echo THREAD_BATCH_SLEEP_MS env not found, use $THREAD_BATCH_SLEEP_MS
 fi
+
+if [[ -n $BUILDKITE_BUILD_URL ]] ; then
+	BUILD_BUTTON_TEXT="Build Kite Job"
+else
+	BUILD_BUTTON_TEXT="Build URL not defined"
+    BUILDKITE_BUILD_URL="https://buildkite.com/solana-labs/"
+fi
+
 ## Configuration
 test_type=$TEST_TYPE
 client="tpu"
@@ -169,7 +177,7 @@ done
 ## For debug , printout each result of
 # for r in "${!FLUX_RESULT[@]}"
 # do
-#   	result=${FLUX_RESULT[${r}]}
+#   result=${FLUX_RESULT[${r}]}
 # 	echo "---- $r result ----"
 # 	echo "$result"
 # 	echo "-----$r end-------"
@@ -268,7 +276,7 @@ result_input="${FLUX_RESULT['p99_ct_stats_block_cost']}"
 get_value
 p99_ct_stats_block_cost_txt="99th_cost_tracker_stats_block_cost: $_value"
 
-# #  ct_stats_block_cost
+# ct_stats_block_cost
 result_input="${FLUX_RESULT['mean_ct_stats_transaction_count']}"
 get_value
 mean_mean_ct_stats_tx_count_txt="mean_cost_tracker_stats_transaction_count: $_value"
@@ -331,6 +339,7 @@ gf_from=$(echo "scale=2;${start_time}*1000-28800*1000" | bc)
 gf_to=$(echo "scale=2;${stop_time}*1000-28800*1000" | bc)
 gf_prefix="https://metrics.solana.com:3000/d/monitor-edge/cluster-telemetry-edge?orgId=1&var-datasource=InfluxDB-testnet&var-testnet=tds&var-hostid=All&from="
 printf -v gf_url "%s%s%s%s" $gf_prefix $gf_from "&to=" $gf_to
+
 ## Construct Test_Configuration
 printf -v test_config "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n" \
 		"test-type = $test_type" "client = $client" "commit = $git_commit" \

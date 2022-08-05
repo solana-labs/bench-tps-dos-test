@@ -159,7 +159,7 @@ echo 'cp ~/bench-tps-dos-test/start-dos-test.sh .' >> exec-start-template.sh
 if [[ ! "$BUILD_SOLANA" ]];then
 	BUILD_SOLANA="false"
 fi
-# add information to exec-start-dos-test.sh
+# add information to exec-start-build-solana.sh
 if [[ "$BUILD_SOLANA" == "true" ]];then
 	if [[ ! "$CHANNEL" ]];then
 		CHANNEL=edge

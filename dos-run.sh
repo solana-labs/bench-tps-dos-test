@@ -315,7 +315,7 @@ if [[ ! "$TX_COUNT" ]];then
 	fi
 fi
 echo "TX_COUNT=$TX_COUNT" >> dos-report-env.sh
-if [[ !"$THREAD_BATCH_SLEEP_MS" ]];then
+if [[ ! "$THREAD_BATCH_SLEEP_MS" ]];then
 	if [[ "$TPU_USE_QUIC" == "true" ]];then
 		THREAD_BATCH_SLEEP_MS=10
 	else 

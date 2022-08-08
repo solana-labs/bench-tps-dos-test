@@ -79,6 +79,11 @@ if [[ ! $CLUSTER_VERSION ]];then
 	echo CLUSTER_VERSION env not found, use $CLUSTER_VERSION
 fi
 
+if [[ ! $SOLANA_BUILD_BRANCH ]];then
+	SOLANA_BUILD_BRANCH="NA"
+	echo SOLANA_BUILD_BRANCH env not found, use $SOLANA_BUILD_BRANCH
+fi
+
 if [[ ! $THREAD_BATCH_SLEEP_MS ]];then
 	THREAD_BATCH_SLEEP_MS="NA"
 	echo THREAD_BATCH_SLEEP_MS env not found, use $THREAD_BATCH_SLEEP_MS
@@ -341,8 +346,8 @@ gf_prefix="https://metrics.solana.com:3000/d/monitor-edge/cluster-telemetry-edge
 printf -v gf_url "%s%s%s%s" $gf_prefix $gf_from "&to=" $gf_to
 
 ## Construct Test_Configuration
-printf -v test_config "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n" \
-		"test-type = $test_type" "client = $client" "commit = $git_commit" \
+printf -v test_config "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s%n" \
+		"test-type = $test_type" "client = $client" "branch = $SOLANA_BUILD_BRANCH" "commit = $git_commit" \
 		"cluster version = $cluster_version" "bench-tps-clients = $num_clients" "read-client-keys = $client_keypair_path" \
 		"duration = $duration" "tx_count = $tx_count" "thread_batch_sleep_ms = $thread_batch_sleep_ms"
 		

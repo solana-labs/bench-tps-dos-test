@@ -23,9 +23,9 @@ if [[ ! "$SLACK_WEBHOOK" ]];then
 	echo SLACK_WEBHOOK env not found, exit
 	exit 1
 fi
-if [[ ! "$SOLANA_BUILD_VER" ]];then
-	SOLANA_BUILD_VER=same-as-cluster
-	echo SOLANA_BUILD_VER env not found, use $SOLANA_BUILD_VER
+if [[ ! "$SOLANA_BUILD_BRANCH" ]];then
+	SOLANA_BUILD_BRANCH=same-as-cluster
+	echo SOLANA_BUILD_BRANCH env not found, use $SOLANA_BUILD_BRANCH
 fi
 get_time_after() {
 	outcom_in_sec=$(echo ${given_ts} + ${add_secs} | bc) 
@@ -114,8 +114,8 @@ create_gce() {
 echo ----- stage: get cluster version and git information --- 
 get_testnet_ver
 TESTNET_VER=$testnet_ver
-if [[ "$SOLANA_BUILD_VER" == "same-as-cluster" ]];then
-	SOLANA_BUILD_VER=$TESTNET_VER
+if [[ "$SOLANA_BUILD_BRANCH" == "same-as-cluster" ]];then
+	SOLANA_BUILD_BRANCH=$TESTNET_VER
 fi
 if [[ -d "./solana" ]];then
     rm -rf solana
@@ -123,7 +123,7 @@ fi
 ret=$(git clone https://github.com/solana-labs/solana.git)
 if [[ -d solana ]];then
 	cd ./solana
-	ret=$(git checkout $SOLANA_BUILD_VER)
+	ret=$(git checkout $SOLANA_BUILD_BRANCH)
 	GIT_COMMIT=$(git rev-parse HEAD)
 	cd ../
 else
@@ -170,7 +170,7 @@ if [[ "$BUILD_SOLANA" == "true" ]];then
 		rm  exec-start-build-solana.sh 
 	fi
 	sed  -e 19a\\"export CHANNEL=$CHANNEL" exec-start-template.sh > exec-start-build-solana.sh 
-	echo "export SOLANA_BUILD_VER=$SOLANA_BUILD_VER" >> exec-start-build-solana.sh
+	echo "export SOLANA_BUILD_BRANCH=$SOLANA_BUILD_BRANCH" >> exec-start-build-solana.sh
 	chmod +x exec-start-build-solana.sh
 	cat exec-start-build-solana.sh
 	if [[ ! -f "exec-start-build-solana.sh" ]];then
@@ -319,6 +319,7 @@ else
 	THREAD_BATCH_SLEEP_MS=1
 fi
 echo "THREAD_BATCH_SLEEP_MS=$THREAD_BATCH_SLEEP_MS" >> dos-report-env.sh
+echo "SOLANA_BUILD_BRANCH=$SOLANA_BUILD_BRANCH" >> dos-report-env.sh
 
 if [[ ! "$SUSTAINED" ]];then
     SUSTAINED="false"

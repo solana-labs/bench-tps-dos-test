@@ -15,6 +15,7 @@ This is a implementation for
   SLACK_WEBHOOK: ""
   USE_TPU_CLIENT: "true"
   TPU_USE_QUIC: "true"
+  THREAD_BATCH_SLEEP: 10
   DURATION: 1800
   TX_COUNT: 1000
   SUSTAINED: "true"

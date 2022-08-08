@@ -8,7 +8,7 @@ This is a implementation for
 ## Environment in buildkite example
 ```
   BUILD_SOLANA: "false" 
-  SOLANA_BUILD_VER: same-as-cluster
+  SOLANA_BUILD_BRANCH: same-as-cluster
   AVAILABLE_ZONE: "us-west2-b asia-east1-b asia-northeast1-a" 
   ENDPOINT: "http://123.123.123.123"
   NUM_CLIENT: 2
@@ -22,7 +22,7 @@ This is a implementation for
 ```
 + Mandatory: ENDPOINT / NUM_CLIENT / SLACK_WEBHOOK
 + BUILD_SOLANA: "true" to build bench-tps from solana source
-+ SOLANA_BUILD_VER: git checkout branch/version to build solana (same-as-cluster/master/v1.10.32/10.1 ...etc.) default: same-as-cluster
++ SOLANA_BUILD_BRANCH: git checkout branch/version to build solana (same-as-cluster/master/v1.10.32/10.1 ...etc.) default: same-as-cluster
 + AVAILABLE_ZONE: zones to create google cloud instance. (Be aware of quota issue)
 + NUM_CLIENT: 10 (default 10 for QUIC & 1 for UDP)
 + USE_TPU_CLIENT/TPU_USE_QUIC/DURATION/TX_COUNT/SUSTAINED arguments for bench-tps

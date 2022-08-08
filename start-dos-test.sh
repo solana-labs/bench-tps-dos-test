@@ -62,14 +62,14 @@ else
     fi
 fi
 
-if [[ ! "$THREAD_BATCH_SLEEP" ]];then
+if [[ ! "$THREAD_BATCH_SLEEP_MS" ]];then
     if [[ "$TPU_USE_QUIC" == "true" ]];then
         thread_batch_sleep_ms=10
     else
         thread_batch_sleep_ms=1
     fi
 else 
-        thread_batch_sleep_ms=$THREAD_BATCH_SLEEP
+        thread_batch_sleep_ms=$THREAD_BATCH_SLEEP_MS
 fi
 # d) sustained (boolean, if true --sustained, if false nothing)
 if [[ ! "$SUSTAINED" ]];then

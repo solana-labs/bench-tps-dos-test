@@ -203,8 +203,8 @@ fi
 if [[ "$TX_COUNT" ]];then
     echo "export TX_COUNT=$TX_COUNT" >> exec-start-dos-test.sh
 fi
-if [[ "$THREAD_BATCH_SLEEP" ]];then
-    echo "export THREAD_BATCH_SLEEP=$THREAD_BATCH_SLEEP" >> exec-start-dos-test.sh
+if [[ "$THREAD_BATCH_SLEEP_MS" ]];then
+    echo "export THREAD_BATCH_SLEEP_MS=$THREAD_BATCH_SLEEP_MS" >> exec-start-dos-test.sh
 fi
 if [[ "$SUSTAINED" ]];then
     echo "export SUSTAINED=$SUSTAINED" >> exec-start-dos-test.sh
@@ -315,12 +315,14 @@ if [[ ! "$TX_COUNT" ]];then
 	fi
 fi
 echo "TX_COUNT=$TX_COUNT" >> dos-report-env.sh
-
-if [[ "$TPU_USE_QUIC" == "true" ]];then
-	THREAD_BATCH_SLEEP_MS=10
-else 
-	THREAD_BATCH_SLEEP_MS=1
+if [[ !"$THREAD_BATCH_SLEEP_MS" ]];then
+	if [[ "$TPU_USE_QUIC" == "true" ]];then
+		THREAD_BATCH_SLEEP_MS=10
+	else 
+		THREAD_BATCH_SLEEP_MS=1
+	fi
 fi
+
 echo "THREAD_BATCH_SLEEP_MS=$THREAD_BATCH_SLEEP_MS" >> dos-report-env.sh
 echo "SOLANA_BUILD_BRANCH=$SOLANA_BUILD_BRANCH" >> dos-report-env.sh
 

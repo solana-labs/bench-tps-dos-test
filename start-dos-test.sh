@@ -48,7 +48,6 @@ fi
 
 if [[ "$TPU_USE_QUIC" == "true" ]];then
     tpu_use_quic="--tpu-use-quic"
-    thread_batch_sleep_ms=10
     if [[ ! "$TX_COUNT" ]];then
         tx_count=2000
     else
@@ -56,12 +55,21 @@ if [[ "$TPU_USE_QUIC" == "true" ]];then
     fi
 else  
     tpu_use_quic=""
-    thread_batch_sleep_ms=1
     if [[ ! "$TX_COUNT" ]];then
         tx_count=10000
     else
         tx_count=$TX_COUNT
     fi
+fi
+
+if [[ ! "$THREAD_BATCH_SLEEP" ]];then
+    if [[ "$TPU_USE_QUIC" == "true" ]];then
+        thread_batch_sleep_ms=10
+    else
+        thread_batch_sleep_ms=1
+    fi
+else 
+        thread_batch_sleep_ms=$THREAD_BATCH_SLEEP
 fi
 # d) sustained (boolean, if true --sustained, if false nothing)
 if [[ ! "$SUSTAINED" ]];then

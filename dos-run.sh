@@ -201,6 +201,9 @@ fi
 if [[ "$TX_COUNT" ]];then
     echo "export TX_COUNT=$TX_COUNT" >> exec-start-dos-test.sh
 fi
+if [[ "$THREAD_BATCH_SLEEP" ]];then
+    echo "export THREAD_BATCH_SLEEP=$THREAD_BATCH_SLEEP" >> exec-start-dos-test.sh
+fi
 if [[ "$SUSTAINED" ]];then
     echo "export SUSTAINED=$SUSTAINED" >> exec-start-dos-test.sh
 fi

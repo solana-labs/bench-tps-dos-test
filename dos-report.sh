@@ -85,7 +85,7 @@ if [[ ! $SOLANA_BUILD_BRANCH ]];then
 fi
 
 if [[ ! $THREAD_BATCH_SLEEP_MS ]];then
-	THREAD_BATCH_SLEEP_MS="NA"
+	THREAD_BATCH_SLEEP_MS=NA
 	echo THREAD_BATCH_SLEEP_MS env not found, use $THREAD_BATCH_SLEEP_MS
 fi
 

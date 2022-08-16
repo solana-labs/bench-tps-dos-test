@@ -21,6 +21,12 @@ echo CHANNEL: $CHANNEL
 echo RUST_VER: $RUST_VER
 echo SOLANA_BUILD_BRANCH: $SOLANA_BUILD_BRANCH
 
+## preventing lock-file build fail, 
+## also need to disable software upgrade in image
+sudo fuser -vki -TERM /var/lib/dpkg/lock /var/lib/dpkg/lock-frontend || true
+sudo dpkg --configure -a
+sudo apt update
+
 ## pre-install and rust version
 sudo apt-get install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler
 

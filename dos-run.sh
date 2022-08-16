@@ -81,7 +81,7 @@ function get_testnet_ver() {
 create_gce() {
 	vm_name=dos-test-`date +%y%m%d-%M-%S`
 	project=principal-lane-200702
-	img_name=dos-220708-solana-prebuild-debug
+	img_name=dos-bench-tps-instances-img-0816
 	if [[ ! "$zone" ]];then
 		zone=asia-east1-b
 	fi

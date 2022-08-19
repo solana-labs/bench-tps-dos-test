@@ -27,6 +27,11 @@ if [[ ! "$SOLANA_BUILD_BRANCH" ]];then
 	SOLANA_BUILD_BRANCH=same-as-cluster
 	echo SOLANA_BUILD_BRANCH env not found, use $SOLANA_BUILD_BRANCH
 fi
+if [[ ! "$RUN_BENCH_AT_TS_UTC" ]];then
+	RUN_BENCH_AT_TS_UTC=0
+	echo RUN_BENCH_AT_TS_UTC env not found, use $RUN_BENCH_AT_TS_UTC
+fi
+
 get_time_after() {
 	outcom_in_sec=$(echo ${given_ts} + ${add_secs} | bc) 
 }
@@ -248,6 +253,21 @@ if [[ "$BUILD_SOLANA" == "true" ]];then
 		ret_pre_build=$(ssh -i id_ed25519_dos_test -o StrictHostKeyChecking=no sol@$sship 'bash -s' < exec-start-build-solana.sh)
 	done
 fi
+echo ----- stage: timed to start benchmark ------
+if [[ $RUN_BENCH_AT_TS_UTC -gt 0 ]];then
+	local cur_time=$(echo `date -u +%s`)
+	if [[ $cur_time -gt $RUN_BENCH_AT_TS_UTC ]];then
+		echo "current timestamp ($cur_time) has passed specified $RUN_BENCH_AT_TS_UTC timestamp. Abort!"
+		exit 1
+	fi
+	while [[ $cur_time -lt $RUN_BENCH_AT_TS_UTC ]];
+	do
+		sleep 1
+		cur_time=$(echo `date -u +%s`)
+	done
+
+fi
+
 
 echo ----- stage: run benchmark-tps background ------
 # Get Time Start

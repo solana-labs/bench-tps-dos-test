@@ -2,13 +2,12 @@
 # slot
 _start_slot='from(bucket: "testnet")|> range(start:'${start_time}' ,stop:'${start_time2}')
 			|> filter(fn: (r) => r._measurement == "optimistic_slot")
- 			|> group(columns: ["slot"])|> max()
+ 			|> group(columns: ["slot"])|> median()
 			|>drop(columns: ["_measurement", "_field", "_start", "_stop","_time","host_id"])'
 			
 _end_slot='from(bucket: "testnet")|> range(start:'${stop_time2}' ,stop:'${stop_time}')
 			|> filter(fn: (r) => r._measurement == "optimistic_slot")
-			|> group(columns: ["slot"])
-			|> max()
+			|> group(columns: ["slot"])|> median()
 			|> drop(columns: ["_measurement", "_field", "_start", "_stop","_time","host_id"])'
 
 # TPS

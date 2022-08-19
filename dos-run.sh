@@ -255,7 +255,7 @@ if [[ "$BUILD_SOLANA" == "true" ]];then
 fi
 echo ----- stage: timed to start benchmark ------
 if [[ $RUN_BENCH_AT_TS_UTC -gt 0 ]];then
-	local cur_time=$(echo `date -u +%s`)
+	cur_time=$(echo `date -u +%s`)
 	if [[ $cur_time -gt $RUN_BENCH_AT_TS_UTC ]];then
 		echo "current timestamp ($cur_time) has passed specified $RUN_BENCH_AT_TS_UTC timestamp. Abort!"
 		exit 1

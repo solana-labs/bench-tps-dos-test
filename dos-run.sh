@@ -31,7 +31,14 @@ if [[ ! "$RUN_BENCH_AT_TS_UTC" ]];then
 	RUN_BENCH_AT_TS_UTC=0
 	echo RUN_BENCH_AT_TS_UTC env not found, use $RUN_BENCH_AT_TS_UTC
 fi
-
+if [[ ! "$TPU_USE_QUIC" ]];then
+	TPU_USE_QUIC=0
+	echo TPU_USE_QUIC env not found, use $TPU_USE_QUIC
+fi
+if [[ ! "$TPU_DISABLE_QUIC" ]];then
+	TPU_DISABLE_QUIC=0
+	echo TPU_DISABLE_QUIC env not found, use $TPU_DISABLE_QUIC
+fi
 get_time_after() {
 	outcom_in_sec=$(echo ${given_ts} + ${add_secs} | bc) 
 }
@@ -39,7 +46,6 @@ get_time_after() {
 get_time_before() {
 	outcom_in_sec=$(echo ${given_ts} - ${minus_secs} | bc) 
 }
-
 
 download_file() {
 	for retry in 0 1
@@ -202,6 +208,11 @@ if [[ "$TPU_USE_QUIC" == "true" ]];then
 else
 	 echo "export TPU_USE_QUIC=\"false\"" >> exec-start-dos-test.sh
 fi
+if [[ "$TPU_DISABLE_QUIC" == "true" ]];then
+	 echo "export TPU_DISABLE_QUIC=\"true\"" >> exec-start-dos-test.sh
+else
+	 echo "export TPU_DISABLE_QUIC=\"false\"" >> exec-start-dos-test.sh
+fi
 if [[ "$DURATION" ]];then
     echo "export DURATION=$DURATION" >> exec-start-dos-test.sh
 fi
@@ -328,19 +339,11 @@ if [[ ! "$DURATION" ]];then
 fi
 echo "DURATION=$DURATION" >> dos-report-env.sh
 if [[ ! "$TX_COUNT" ]];then
-	if [[ "$TPU_USE_QUIC" == "true" ]];then
-		TX_COUNT=2000
-	else 
-		TX_COUNT=10000
-	fi
+	TX_COUNT=10000
 fi
 echo "TX_COUNT=$TX_COUNT" >> dos-report-env.sh
 if [[ ! "$THREAD_BATCH_SLEEP_MS" ]];then
-	if [[ "$TPU_USE_QUIC" == "true" ]];then
-		THREAD_BATCH_SLEEP_MS=10
-	else 
-		THREAD_BATCH_SLEEP_MS=1
-	fi
+	THREAD_BATCH_SLEEP_MS=1
 fi
 
 echo "THREAD_BATCH_SLEEP_MS=$THREAD_BATCH_SLEEP_MS" >> dos-report-env.sh

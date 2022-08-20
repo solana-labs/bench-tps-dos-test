@@ -278,10 +278,8 @@ add_secs=$adjust_ts
 get_time_after
 start_time2=$outcom_in_sec
 
-for sship in "${instance_ip[@]}"
-do
-	ret_benchmark=$(ssh -i id_ed25519_dos_test -o StrictHostKeyChecking=no sol@$sship 'bash -s' < exec-start-dos-test.sh)
-done
+echo ----- stage: printout log ------
+ret_benchmark=$(ssh -i id_ed25519_dos_test -o StrictHostKeyChecking=no sol@${instance_ip[0]} 'cat start-dos-test.nohup')
 
 echo ----- stage: wait for benchmark to end ------
 sleep_time=$(echo "$DURATION+2" | bc)
@@ -358,6 +356,11 @@ echo "STOP_TIME2=${stop_time2}" >> dos-report-env.sh
 cat dos-report-env.sh
 ret_dos_report=$(exec ./dos-report.sh)
 echo $ret_dos_report
+
+echo ----- stage: printout run log ------
+ret_log =$(ssh -i id_ed25519_dos_test -o StrictHostKeyChecking=no sol@$sship 'start-dos-test.nohup')
+
+
 echo ----- stage: remove gc instances ------
 echo "instance_name : ${instance_name[@]}"
 echo "instance_zone : ${instance_zone[@]}"

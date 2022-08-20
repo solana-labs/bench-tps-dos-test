@@ -43,23 +43,27 @@ else
 fi
 
 # c) tpu_use_quic (boolean, if true --tpu-use-quic, if false nothing) --> false does UDP
-# f) tx_count (--tx_count 10000 for the UDP test and --tx_count 2000 per client for the QUIC 
+# c.1) quic is default so tpu_use_quic is no longer exist for some branches (master at 8/20)
+# f) tx_count (--tx_count 10000 for the UDP test and --tx_count 2000 per client for the QUIC ) 
+# f1.1) tx_count no longer bound to test type. 8/20/2022
 # g) thread_batch_sleep ( --thread-batch-sleep-ms 1 for UDP --thread-batch-sleep-ms 10 for QUIC)
+# g.1) no longer bound to test type
+if [[ ! "$TX_COUNT" ]];then
+    tx_count=10000
+else
+    tx_count=$TX_COUNT
+fi
 
 if [[ "$TPU_USE_QUIC" == "true" ]];then
     tpu_use_quic="--tpu-use-quic"
-    if [[ ! "$TX_COUNT" ]];then
-        tx_count=2000
-    else
-        tx_count=$TX_COUNT
-    fi
 else  
     tpu_use_quic=""
-    if [[ ! "$TX_COUNT" ]];then
-        tx_count=10000
-    else
-        tx_count=$TX_COUNT
-    fi
+fi
+
+if [[ "$TPU_DISABLE_QUIC" == "true" ]];then
+    tpu_disable_quic="--tpu-disable-quic"
+else  
+    tpu_disable_quic=""
 fi
 
 if [[ ! "$THREAD_BATCH_SLEEP_MS" ]];then
@@ -131,7 +135,7 @@ echo KEYPAIR_FILE $KEYPAIR_FILE
 echo keyfile : $base/$KEYPAIR_DIR/$KEYPAIR_FILE
 
 benchmark=$(./solana-bench-tps -u $RPC_ENDPOINT --identity $base/$ID_DIR/$ID_FILE --read-client-keys $base/$KEYPAIR_DIR/$KEYPAIR_FILE \
-		$use_client $sustained $tpu_use_quic  --duration $duration --tx_count $tx_count --thread-batch-sleep-ms $thread_batch_sleep_ms)
+		$use_client $sustained $tpu_use_quic  $tpu_disable_quic  --duration $duration --tx_count $tx_count --thread-batch-sleep-ms $thread_batch_sleep_ms)
 
 echo $benchmark
 echo --- end of benchmark $(date)

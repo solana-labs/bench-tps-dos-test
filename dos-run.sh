@@ -240,18 +240,21 @@ else
 	available_zone=( $AVAILABLE_ZONE )
 fi
 
-for i in $(seq 1 $NUM_CLIENT)
-do
-	if [[ $count -ge ${#available_zone[@]} ]];then
-    	count=0
-    fi 
-	zone=${available_zone[$count]}
-	create_gce
-	let count+=1
-	echo "gc instance is created in $zone"
-	sleep 20 # avoid too quick build
-done
-sleep 60 # delay for ssh to be ready 
+# for i in $(seq 1 $NUM_CLIENT)
+# do
+# 	if [[ $count -ge ${#available_zone[@]} ]];then
+#     	count=0
+#     fi 
+# 	zone=${available_zone[$count]}
+# 	create_gce
+# 	let count+=1
+# 	echo "gc instance is created in $zone"
+# 	sleep 20 # avoid too quick build
+# done
+# sleep 60 # delay for ssh to be ready 
+instance_ip=( 104.198.104.63 34.168.113.221 34.81.173.152 34.91.118.200 35.230.31.143 104.199.157.73 35.204.184.134 35.203.137.47 34.80.63.42 35.204.4.250 )
+instance_name=( dos-test-220820-01-57 dos-test-220820-04-24 dos-test-220820-05-21 dos-test-220820-06-38 dos-test-220820-07-42 dos-test-220820-08-39 dos-test-220820-09-48 dos-test-220820-10-51 dos-test-220820-11-48 dos-test-220820-13-03 )
+instance_zone=( us-west1-b us-west1-b asia-east1-b europe-west4-a us-west1-b asia-east1-b europe-west4-a us-west1-b asia-east1-b europe-west4-a )
 echo "instance_ip ${instance_ip[@]}"
 echo "instance_name ${instance_name[@]}"
 echo "instance_zone ${instance_zone[@]}"

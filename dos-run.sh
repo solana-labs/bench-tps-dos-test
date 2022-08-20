@@ -371,7 +371,6 @@ echo $ret_dos_report
 echo ----- stage: printout run log ------
 ret_log =$(ssh -i id_ed25519_dos_test -o StrictHostKeyChecking=no sol@${instance_ip[0]} 'cat /home/sol/start-dos-test.nohup')
 
-
 echo ----- stage: remove gc instances ------
 if [[ ! $KEEP_INSTANCES == "true" ]];then
 	echo "instance_name : ${instance_name[@]}"

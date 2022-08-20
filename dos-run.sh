@@ -361,7 +361,7 @@ ret_dos_report=$(exec ./dos-report.sh)
 echo $ret_dos_report
 
 echo ----- stage: printout run log ------
-ret_log =$(ssh -i id_ed25519_dos_test -o StrictHostKeyChecking=no sol@$sship '/home/sol/start-dos-test.nohup')
+ret_log =$(ssh -i id_ed25519_dos_test -o StrictHostKeyChecking=no sol@$sship 'cat /home/sol/start-dos-test.nohup')
 
 
 echo ----- stage: remove gc instances ------

@@ -62,13 +62,13 @@ if [[ ! $TX_COUNT ]];then
 fi
 
 if [[ ! $TEST_TYPE ]];then
-	TEST_TYPE="UDP"
+	TEST_TYPE="NA"
 	echo TEST_TYPE env not found, use $TEST_TYPE
 fi
 
 if [[ ! $NUM_CLIENT ]];then
-	NUM_CLIENT=NA
-	echo TEST_TYPE env not found, use $TEST_TYPE
+	NUM_CLIENT="NA"
+	echo NUM_CLIENT env not found, use $NUM_CLIENT
 fi
 if [[ ! $GIT_COMMIT ]];then
 	GIT_COMMIT="NA"

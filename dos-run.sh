@@ -18,9 +18,12 @@ if [[ ! "$NUM_CLIENT" ]];then
 	echo NUM_CLIENT env not found, exit
 	exit 1
 fi
-
 if [[ ! "$SLACK_WEBHOOK" ]];then
 	echo SLACK_WEBHOOK env not found, exit
+	exit 1
+fi
+if [[ ! "$TEST_TYPE" ]];then
+	echo TEST_TYPE env not found, exit
 	exit 1
 fi
 if [[ ! "$SOLANA_BUILD_BRANCH" ]];then
@@ -198,6 +201,7 @@ fi
 sed  -e 19a\\"export RPC_ENDPOINT=$ENDPOINT" exec-start-template.sh > exec-start-dos-test.sh
 
 chmod +x exec-start-dos-test.sh
+echo "export TEST_TYPE=$TEST_TYPE >> exec-start-dos-test.sh 
 if [[ "$USE_TPU_CLIENT" == "true" ]];then
 	 echo "export USE_TPU_CLIENT=\"true\"" >> exec-start-dos-test.sh
 else 
@@ -208,6 +212,7 @@ if [[ "$TPU_USE_QUIC" == "true" ]];then
 else
 	 echo "export TPU_USE_QUIC=\"false\"" >> exec-start-dos-test.sh
 fi
+
 if [[ "$TPU_DISABLE_QUIC" == "true" ]];then
 	 echo "export TPU_DISABLE_QUIC=\"true\"" >> exec-start-dos-test.sh
 else
@@ -322,11 +327,7 @@ echo $file_in_bucket is download
 if [[ ! "$TPU_USE_QUIC" ]];then
 	TPU_USE_QUIC="false"
 fi
-if [[ "$TPU_USE_QUIC" == "true" ]];then
-	echo "TEST_TYPE=QUIC" >> dos-report-env.sh
-else 
-	echo "TEST_TYPE=UDP" >> dos-report-env.sh
-fi
+
 echo "CLUSTER_VERSION=$TESTNET_VER" >> dos-report-env.sh
 echo "GIT_COMMIT=$GIT_COMMIT" >> dos-report-env.sh
 echo "NUM_CLIENT=$NUM_CLIENT" >> dos-report-env.sh
@@ -342,6 +343,7 @@ if [[ ! "$TX_COUNT" ]];then
 	TX_COUNT=10000
 fi
 echo "TX_COUNT=$TX_COUNT" >> dos-report-env.sh
+
 if [[ ! "$THREAD_BATCH_SLEEP_MS" ]];then
 	THREAD_BATCH_SLEEP_MS=1
 fi

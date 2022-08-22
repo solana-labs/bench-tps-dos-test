@@ -3,7 +3,7 @@
 set -ex
 
 if [[ ! "$RPC_ENDPOINT" ]];then
-    echo "No RPC_ENDPOINT"
+    echo "No RPC_ENDPOINT" >> dos-env.out
     exit 1
 fi
 
@@ -35,13 +35,14 @@ echo --- stage:setup ENV ---
 # b) use_tpu_client (boolean, if true --use-tpu-client, if false --use-rpc-client)
 if [[ ! "$USE_TPU_CLIENT" ]];then
     USE_TPU_CLIENT="false"
+    echo No USE_TPU_CLIENT Env, use $USE_TPU_CLIENT >> dos-env.out
 fi
 if [[ "$USE_TPU_CLIENT" == "true" ]];then
     use_client="--use-tpu-client"
 else
     use_client="--use-rpc-client"
 fi
-
+echo USE_TPU_CLIENT=$USE_TPU_CLIENT, use_client=$use_client  >> dos-env.out
 # c) tpu_use_quic (boolean, if true --tpu-use-quic, if false nothing) --> false does UDP
 # c.1) quic is default so tpu_use_quic is no longer exist for some branches (master at 8/20)
 # f) tx_count (--tx_count 10000 for the UDP test and --tx_count 2000 per client for the QUIC ) 
@@ -50,8 +51,10 @@ fi
 # g.1) no longer bound to test type
 if [[ ! "$TX_COUNT" ]];then
     tx_count=10000
+    echo No TX_COUNT Env, use $TX_COUNT >> dos-env.out
 else
     tx_count=$TX_COUNT
+    echo No tx_count=$tx_count >> dos-env.out
 fi
 
 if [[ "$TPU_USE_QUIC" == "true" ]];then
@@ -59,31 +62,33 @@ if [[ "$TPU_USE_QUIC" == "true" ]];then
 else  
     tpu_use_quic=""
 fi
+echo tpu_use_quic=$tpu_use_quic >> dos-env.out
 
 if [[ "$TPU_DISABLE_QUIC" == "true" ]];then
     tpu_disable_quic="--tpu-disable-quic"
 else  
     tpu_disable_quic=""
 fi
+echo tpu_disable_quic=$tpu_disable_quic >> dos-env.out
 
 if [[ ! "$THREAD_BATCH_SLEEP_MS" ]];then
-    if [[ "$TPU_USE_QUIC" == "true" ]];then
-        thread_batch_sleep_ms=10
-    else
-        thread_batch_sleep_ms=1
-    fi
+    thread_batch_sleep_ms=1
+    echo No THREAD_BATCH_SLEEP_MS, thread_batch_sleep_ms=1 >> dos-env.out
 else 
-        thread_batch_sleep_ms=$THREAD_BATCH_SLEEP_MS
+    thread_batch_sleep_ms=$THREAD_BATCH_SLEEP_MS
+    echo thread_batch_sleep_ms=THREAD_BATCH_SLEEP_MS=$THREAD_BATCH_SLEEP_MS >> dos-env.out
 fi
 # d) sustained (boolean, if true --sustained, if false nothing)
 if [[ ! "$SUSTAINED" ]];then
     SUSTAINED="false"
+    echo No SUSTAINED Env, use SUSTAINED=$SUSTAINED >> dos-env.out
 fi
 if [[ "$SUSTAINED" == "true" ]];then
     sustained="--sustained"
 else
     sustained=""
 fi
+echo sustained=$sustained >> dos-env.out
 # e) duration (default --duration 1800) 
 if [[ ! "$DURATION" ]];then
     duration=1800
@@ -91,7 +96,7 @@ if [[ ! "$DURATION" ]];then
 else
     duration=$DURATION
 fi
-
+echo duration=$duration >> dos-env.out
 
 download_file() {
 	for retry in 0 1

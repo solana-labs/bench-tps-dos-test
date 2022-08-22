@@ -289,9 +289,6 @@ add_secs=$adjust_ts
 get_time_after
 start_time2=$outcom_in_sec
 
-echo ----- stage: printout log ------
-ret_benchmark=$(ssh -i id_ed25519_dos_test -o StrictHostKeyChecking=no sol@${instance_ip[0]} 'cat start-dos-test.nohup')
-
 echo ----- stage: wait for benchmark to end ------
 sleep_time=$(echo "$DURATION+2" | bc)
 sleep $sleep_time

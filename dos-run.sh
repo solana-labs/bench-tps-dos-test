@@ -201,7 +201,9 @@ fi
 sed  -e 19a\\"export RPC_ENDPOINT=$ENDPOINT" exec-start-template.sh > exec-start-dos-test.sh
 
 chmod +x exec-start-dos-test.sh
-echo "export TEST_TYPE=$TEST_TYPE >> exec-start-dos-test.sh 
+
+echo "export TEST_TYPE=$TEST_TYPE" >> exec-start-dos-test.sh 
+
 if [[ "$USE_TPU_CLIENT" == "true" ]];then
 	 echo "export USE_TPU_CLIENT=\"true\"" >> exec-start-dos-test.sh
 else 
@@ -233,7 +235,9 @@ fi
 if [[ "$KEYPAIR_FILE" ]];then
     echo "export KEYPAIR_FILE=$KEYPAIR_FILE" >> exec-start-dos-test.sh
 fi
+
 cat exec-start-dos-test.sh
+
 # in order to do none-blocking  run nohup in background
 echo 'exec nohup ./start-dos-test.sh > start-dos-test.log 2>start-dos-test.nohup &' >> exec-start-dos-test.sh
 

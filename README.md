@@ -7,21 +7,25 @@ This is a implementation for
 
 ## Environment in buildkite example
 ```
-  BUILD_SOLANA: "false" 
-  SOLANA_BUILD_BRANCH: same-as-cluster
-  AVAILABLE_ZONE: "us-west2-b asia-east1-b asia-northeast1-a" 
-  ENDPOINT: "http://123.123.123.123"
+  TEST_TYPE: "QUIC"         # This will show on report
+  GIT_TOKEN: "xxxxx"     
+  BUILD_SOLANA: "true"
+  SOLANA_BUILD_BRANCH: "master"  # same-as-cluster / master /v1.10 / v1.10.32 ...
+  # api.inernal
+  NDPOINT: "http://123.123.123.123"
   NUM_CLIENT: 2
   SLACK_WEBHOOK: ""
-  USE_TPU_CLIENT: "true"
-  TPU_USE_QUIC: "true"
-  THREAD_BATCH_SLEEP_MS: 10
+  USE_TPU_CLIENT: "false"
+  TPU_USE_QUIC: "true"  #add --tpu-use-quic
+  TPU_DISABLE_QUIC: "false" # add --tpu-disable-quic
   DURATION: 1800
-  TX_COUNT: 1000
+  TX_COUNT: 2000
+  THREAD_BATCH_SLEEP_MS: 10
   SUSTAINED: "true"
-  KEYPAIR_FILE: "xxxxx.yaml"
+  KEYPAIR_FILE: "xxxx.yaml"
+  KEEP_INSTANCES: "true"  # do not delete instances after bench-tps test
 ```
-+ Mandatory: ENDPOINT / NUM_CLIENT / SLACK_WEBHOOK
++ Mandatory: ENDPOINT / NUM_CLIENT / SLACK_WEBHOOK / TEST_TYPE
 + BUILD_SOLANA: "true" to build bench-tps from solana source
 + SOLANA_BUILD_BRANCH: git checkout branch/version to build solana (same-as-cluster/master/v1.10.32/10.1 ...etc.) default: same-as-cluster
 + AVAILABLE_ZONE: zones to create google cloud instance. (Be aware of quota issue)

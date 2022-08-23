@@ -303,6 +303,11 @@ add_secs=$adjust_ts
 get_time_after
 start_time2=$outcom_in_sec
 
+for sship in "${instance_ip[@]}"
+do
+	ret_benchmark=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@$sship 'bash -s' < exec-start-dos-test.sh)
+done
+
 echo ----- stage: wait for benchmark to end ------
 sleep_time=$(echo "$DURATION+2" | bc)
 sleep $sleep_time

@@ -42,6 +42,11 @@ if [[ ! "$TPU_DISABLE_QUIC" ]];then
 	TPU_DISABLE_QUIC=0
 	echo TPU_DISABLE_QUIC env not found, use $TPU_DISABLE_QUIC
 fi
+if [[ ! "$KEEP_INSTANCES" ]];then
+	KEEP_INSTANCES="false"
+    echo KEEP_INSTANCES env not found, use $KEEP_INSTANCES
+fi
+
 get_time_after() {
 	outcom_in_sec=$(echo ${given_ts} + ${add_secs} | bc) 
 }
@@ -368,11 +373,14 @@ cat dos-report-env.sh
 ret_dos_report=$(exec ./dos-report.sh)
 echo $ret_dos_report
 echo ----- stage: remove gc instances ------
-echo "instance_name : ${instance_name[@]}"
-echo "instance_zone : ${instance_zone[@]}"
-for idx in "${!instance_name[@]}"
-do
-	gcloud compute instances delete --quiet ${instance_name[$idx]} --zone=${instance_zone[$idx]}
-	echo delete $vms
-done
+if [[ ! $KEEP_INSTANCES == "true" ]];then
+	echo "instance_name : ${instance_name[@]}"
+	echo "instance_zone : ${instance_zone[@]}"
+	for idx in "${!instance_name[@]}"
+	do
+		gcloud compute instances delete --quiet ${instance_name[$idx]} --zone=${instance_zone[$idx]}
+		echo delete $vms
+	done
+fi
+
 exit 0

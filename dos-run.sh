@@ -374,10 +374,12 @@ ret_dos_report=$(exec ./dos-report.sh)
 echo $ret_dos_report
 
 echo ----- stage: printout run log ------
-ret_log=$(ssh -i id_ed25519_dos_test -o StrictHostKeyChecking=no sol@${instance_ip[0]} 'cat /home/sol/start-dos-test.nohup')
+if [[ "$PRINT_LOG" == "true" ]];then
+	ret_log=$(ssh -i id_ed25519_dos_test -o StrictHostKeyChecking=no sol@${instance_ip[0]} 'cat /home/sol/start-dos-test.nohup')
+fi
 
 echo ----- stage: remove gc instances ------
-if [[ ! $KEEP_INSTANCES == "true" ]];then
+if [[ ! "$KEEP_INSTANCES" == "true" ]];then
 	echo "instance_name : ${instance_name[@]}"
 	echo "instance_zone : ${instance_zone[@]}"
 	for idx in "${!instance_name[@]}"

@@ -275,7 +275,7 @@ if [[ "$BUILD_SOLANA" == "true" ]];then
 	for sship in "${instance_ip[@]}"
 	do
 		echo run pre start:$sship
-		ret_pre_build=$(ssh -i id_ed25519_dos_test -o StrictHostKeyChecking=no sol@$sship 'bash -s' < exec-start-build-solana.sh)
+		ret_pre_build=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@$sship 'bash -s' < exec-start-build-solana.sh)
 	done
 fi
 echo ----- stage: timed to start benchmark ------
@@ -305,7 +305,7 @@ start_time2=$outcom_in_sec
 
 for sship in "${instance_ip[@]}"
 do
-	ret_benchmark=$(ssh -i id_ed25519_dos_test -o StrictHostKeyChecking=no sol@$sship 'bash -s' < exec-start-dos-test.sh)
+	ret_benchmark=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@$sship 'bash -s' < exec-start-dos-test.sh)
 done
 
 echo ----- stage: wait for benchmark to end ------

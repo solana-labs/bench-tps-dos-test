@@ -4,7 +4,7 @@ set -ex
 base=$(pwd)
 ## Check ENV
 if [[ ! "$SOLANA_BUILD_BRANCH" ]];then 
-    echo No SOLANA_BUILD_BRANCH Env and exit >> env.output
+    echo No SOLANA_BUILD_BRANCH Env and exit > env.output
     exit 1
 fi
 if [[ ! "$CHANNEL" ]];then

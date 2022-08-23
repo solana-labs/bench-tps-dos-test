@@ -3,7 +3,7 @@
 set -ex
 
 if [[ ! "$RPC_ENDPOINT" ]];then
-    echo "No RPC_ENDPOINT" >> dos-env.out
+    echo "No RPC_ENDPOINT" > dos-env.out
     exit 1
 fi
 

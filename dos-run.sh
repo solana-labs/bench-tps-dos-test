@@ -35,7 +35,7 @@ if [[ ! "$RUN_BENCH_AT_TS_UTC" ]];then
 	echo RUN_BENCH_AT_TS_UTC env not found, use $RUN_BENCH_AT_TS_UTC
 fi
 if [[ ! "$TPU_USE_QUIC" ]];then
-	TPU_USE_QUIC=0
+	TPU_USE_QUIC="false"
 	echo TPU_USE_QUIC env not found, use $TPU_USE_QUIC
 fi
 if [[ ! "$TPU_DISABLE_QUIC" ]];then

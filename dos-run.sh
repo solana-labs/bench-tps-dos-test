@@ -183,13 +183,13 @@ if [[ -f "exec-start-dos-test.sh" ]];then
     rm exec-start-dos-test.sh
 fi
 # add git repo to exe-start-template
-echo "export SOLANA_METRICS_CONFIG=$SOLANA_METRICS_CONFIG" >> exec-start-dos-test.sh
 echo "git clone https://github.com/solana-labs/bench-tps-dos-test.git" >> exec-start-template.sh
 echo "cd bench-tps-dos-test" >> exec-start-template.sh
 echo "git checkout $BUILDKITE_BRANCH" >> exec-start-template.sh
 echo "cd ~" >> exec-start-template.sh
 echo 'cp ~/bench-tps-dos-test/start-build-solana.sh .' >> exec-start-template.sh
 echo 'cp ~/bench-tps-dos-test/start-dos-test.sh .' >> exec-start-template.sh
+echo "export SOLANA_METRICS_CONFIG=$SOLANA_METRICS_CONFIG" >> exec-start-template.sh
 if [[ ! "$BUILD_SOLANA" ]];then
 	BUILD_SOLANA="false"
 fi

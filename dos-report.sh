@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 ## solana-bench-tps config
-set -e
-
+set -ex
+# read env
+source dos-report-env.sh
 if [[ ! $SLACK_WEBHOOK ]];then
 	echo SLACK_WEBHOOK env not found, exit
 	exit 1

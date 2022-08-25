@@ -98,7 +98,7 @@ function get_testnet_ver() {
 }
 
 create_gce() {
-	vm_name=dos-test-`date +%y%m%d-H%-%M-%S`
+	vm_name=dos-test-`date +%y%m%d-%H-%M-%S`
 	project=principal-lane-200702
 	img_name=dos-bench-tps-instances-img-0816
 	if [[ ! "$zone" ]];then

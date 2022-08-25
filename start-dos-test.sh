@@ -32,7 +32,7 @@ if [[ ! "$KEYPAIR_TAR_FILE" ]];then
 fi
 
 #### metrics env ####
-echo SOLANA_METRICS_CONFIG="$SOLANA_METRICS_CONFIG" >> dos-env.out
+echo SOLANA_METRICS_CONFIG=\"$SOLANA_METRICS_CONFIG\" >> dos-env.out
 
 #### bench-tps ENV ####
 echo --- stage:setup ENV ---

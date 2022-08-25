@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # benchmark
 set -ex
+# read env
+source dos-report-env.sh
 
 if [[ ! "$RPC_ENDPOINT" ]];then
     echo "No RPC_ENDPOINT" > dos-env.out

@@ -189,7 +189,7 @@ echo "git checkout $BUILDKITE_BRANCH" >> exec-start-template.sh
 echo "cd ~" >> exec-start-template.sh
 echo 'cp ~/bench-tps-dos-test/start-build-solana.sh .' >> exec-start-template.sh
 echo 'cp ~/bench-tps-dos-test/start-dos-test.sh .' >> exec-start-template.sh
-echo "export SOLANA_METRICS_CONFIG=$SOLANA_METRICS_CONFIG" >> exec-start-template.sh
+echo "export SOLANA_METRICS_CONFIG='$SOLANA_METRICS_CONFIG'" >> exec-start-template.sh
 if [[ ! "$BUILD_SOLANA" ]];then
 	BUILD_SOLANA="false"
 fi

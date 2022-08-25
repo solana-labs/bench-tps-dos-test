@@ -150,6 +150,18 @@ else
 	exit 1
 fi
 
+echo ----- stage: prepare metrics env ------ 
+if [[ -f "dos-metrics-env.sh" ]];then
+    rm dos-metrics-env.sh
+fi
+file_in_bucket=dos-metrics-env.sh
+download_file
+if [[ ! -f "dos-metrics-env.sh" ]];then
+	echo "NO dos-metrics-env.sh found"
+	exit 1
+fi
+echo $file_in_bucket is download
+source dos-metrics-env.sh
 
 echo ----- stage: prepare execute scripts ------
 file_in_bucket=id_ed25519_dos_test
@@ -171,6 +183,7 @@ if [[ -f "exec-start-dos-test.sh" ]];then
     rm exec-start-dos-test.sh
 fi
 # add git repo to exe-start-template
+echo "export SOLANA_METRICS_CONFIG=$SOLANA_METRICS_CONFIG" >> exec-start-dos-test.sh
 echo "git clone https://github.com/solana-labs/bench-tps-dos-test.git" >> exec-start-template.sh
 echo "cd bench-tps-dos-test" >> exec-start-template.sh
 echo "git checkout $BUILDKITE_BRANCH" >> exec-start-template.sh
@@ -208,7 +221,6 @@ sed  -e 19a\\"export RPC_ENDPOINT=$ENDPOINT" exec-start-template.sh > exec-start
 chmod +x exec-start-dos-test.sh
 
 echo "export TEST_TYPE=$TEST_TYPE" >> exec-start-dos-test.sh 
-
 if [[ "$USE_TPU_CLIENT" == "true" ]];then
 	 echo "export USE_TPU_CLIENT=\"true\"" >> exec-start-dos-test.sh
 else 
@@ -321,17 +333,6 @@ get_time_before
 stop_time2=$outcom_in_sec
 
 echo ----- stage: DOS report ------
-if [[ -f "dos-report-env.sh" ]];then
-    rm dos-report-env.sh
-fi
-file_in_bucket=dos-report-env.sh
-download_file
-if [[ ! -f "dos-report-env.sh" ]];then
-	echo "NO dos-report-env.sh found"
-	exit 1
-fi
-echo $file_in_bucket is download
-
 ## PASS ENV
 if [[ ! "$TPU_USE_QUIC" ]];then
 	TPU_USE_QUIC="false"

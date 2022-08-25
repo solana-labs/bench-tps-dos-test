@@ -2,13 +2,6 @@
 ## solana-bench-tps config
 set -e
 
-if [[ ! -f "dos-report-env.sh" ]];then
-	echo "NO dos-report-env.sh found"
-	exit 1
-fi
-# read env
-source dos-report-env.sh
-
 if [[ ! $SLACK_WEBHOOK ]];then
 	echo SLACK_WEBHOOK env not found, exit
 	exit 1

@@ -27,7 +27,7 @@ if [[ ! "$TEST_TYPE" ]];then
 	exit 1
 fi
 if [[ ! "$SOLANA_BUILD_BRANCH" ]];then
-	SOLANA_BUILD_BRANCH=same-as-cluster
+	SOLANA_BUILD_BRANCH=master
 	echo SOLANA_BUILD_BRANCH env not found, use $SOLANA_BUILD_BRANCH
 fi
 if [[ ! "$RUN_BENCH_AT_TS_UTC" ]];then
@@ -139,14 +139,14 @@ fi
 if [[ -d "./solana" ]];then
     rm -rf solana
 fi
-ret=$(git clone https://github.com/solana-labs/solana.git)
+ret=$(git clone https://github.com/pgarg66/solana.git)
 if [[ -d solana ]];then
 	cd ./solana
 	ret=$(git checkout $SOLANA_BUILD_BRANCH)
 	GIT_COMMIT=$(git rev-parse HEAD)
 	cd ../
 else
-	echo "can not clone https://github.com/solana-labs/solana.git"
+	echo "can not clone https://github.com/pgarg66/solana.git"
 	exit 1
 fi
 

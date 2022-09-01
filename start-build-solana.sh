@@ -38,7 +38,7 @@ rustup update
 
 # set base directory
 # download solana
-repo=https://github.com/solana-labs/solana.git
+repo=https://github.com/pgarg66/solana.git
 if [[ -d "$base/solana" ]];then
     rm -rf solana
 fi

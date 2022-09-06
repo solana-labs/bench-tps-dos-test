@@ -249,6 +249,9 @@ fi
 if [[ "$SUSTAINED" ]];then
     echo "export SUSTAINED=$SUSTAINED" >> exec-start-dos-test.sh
 fi
+if [[ "$USE_DURABLE_NONCE" ]];then
+    echo "export USE_DURABLE_NONCE=$USE_DURABLE_NONCE" >> exec-start-dos-test.sh
+fi
 if [[ "$KEYPAIR_FILE" ]];then
     echo "export KEYPAIR_FILE=$KEYPAIR_FILE" >> exec-start-dos-test.sh
 fi

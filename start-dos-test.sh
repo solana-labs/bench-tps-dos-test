@@ -147,8 +147,8 @@ echo keyfile : $base/$KEYPAIR_DIR/$KEYPAIR_FILE
 
 benchmark=$(./solana-bench-tps -u $RPC_ENDPOINT --identity $base/$ID_DIR/$ID_FILE --read-client-keys $base/$KEYPAIR_DIR/$KEYPAIR_FILE \
 		$use_client $sustained $tpu_use_quic $use_durable_nonce $tpu_disable_quic  --duration $duration --tx_count $tx_count --thread-batch-sleep-ms $thread_batch_sleep_ms)
-
 echo $benchmark
+
 ret_ps=$(ps aux | grep solana-bench-tps)
 echo $ret_ps > ps.out
 echo --- end of benchmark $(date)

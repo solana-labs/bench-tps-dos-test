@@ -31,6 +31,7 @@ if [[ ! "$KEYPAIR_TAR_FILE" ]];then
     echo No KEYPAIR_TAR_FILE Env , use $KEYPAIR_TAR_FILE >> dos-env.out
 fi
 
+
 #### metrics env ####
 echo SOLANA_METRICS_CONFIG=\"$SOLANA_METRICS_CONFIG\" >> dos-env.out
 
@@ -61,6 +62,12 @@ else
     tpu_use_quic=""
 fi
 echo tpu_use_quic=$tpu_use_quic >> dos-env.out
+if [[ "$USE_DURABLE_NONCE" == "true" ]];then
+    use_durable_nonce="--use-durable-nonce"
+else  
+    use_durable_nonce=""
+fi
+echo use_durable_nonce=$use_durable_nonce >> dos-env.out
 
 if [[ "$TPU_DISABLE_QUIC" == "true" ]];then
     tpu_disable_quic="--tpu-disable-quic"
@@ -139,7 +146,7 @@ echo KEYPAIR_FILE $KEYPAIR_FILE
 echo keyfile : $base/$KEYPAIR_DIR/$KEYPAIR_FILE
 
 benchmark=$(./solana-bench-tps -u $RPC_ENDPOINT --identity $base/$ID_DIR/$ID_FILE --read-client-keys $base/$KEYPAIR_DIR/$KEYPAIR_FILE \
-		$use_client $sustained $tpu_use_quic  $tpu_disable_quic  --duration $duration --tx_count $tx_count --thread-batch-sleep-ms $thread_batch_sleep_ms)
+		$use_client $sustained $tpu_use_quic $use_durable_nonce $tpu_disable_quic  --duration $duration --tx_count $tx_count --thread-batch-sleep-ms $thread_batch_sleep_ms)
 
 echo $benchmark
 ret_ps=$(ps aux | grep solana-bench-tps)

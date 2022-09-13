@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -ex
+set -x
 declare -a instance_ip
 declare -a instance_name
 declare -a instance_zone
@@ -322,7 +322,9 @@ for sship in "${instance_ip[@]}"
 do
 	ret_benchmark=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@$sship 'bash -s' < exec-start-dos-test.sh)
 done
-
+sleep 1
+ret_ps=$(ps aux | grep solana-bench-tps)
+echo bench-cli:$ret_ps
 echo ----- stage: wait for benchmark to end ------
 sleep_time=$(echo "$DURATION+2" | bc)
 sleep $sleep_time

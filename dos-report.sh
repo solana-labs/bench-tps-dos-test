@@ -77,7 +77,10 @@ if [[ ! $SOLANA_BUILD_BRANCH ]];then
 	SOLANA_BUILD_BRANCH="NA"
 	echo SOLANA_BUILD_BRANCH env not found, use $SOLANA_BUILD_BRANCH
 fi
-
+if [[ ! $USE_DURABLE_NONCE ]];then
+	USE_DURABLE_NONCE="false"
+	echo USE_DURABLE_NONCE env not found, use $USE_DURABLE_NONCE
+fi
 if [[ ! $THREAD_BATCH_SLEEP_MS ]];then
 	THREAD_BATCH_SLEEP_MS=NA
 	echo THREAD_BATCH_SLEEP_MS env not found, use $THREAD_BATCH_SLEEP_MS
@@ -343,7 +346,7 @@ printf -v gf_url "%s%s%s%s" $gf_prefix $gf_from "&to=" $gf_to
 printf -v test_config "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n" \
 		"test-type = $test_type" "client = $client" "branch = $SOLANA_BUILD_BRANCH" "commit = $git_commit" \
 		"cluster version = $cluster_version" "bench-tps-clients = $num_clients" "read-client-keys = $client_keypair_path" \
-		"duration = $duration" "tx_count = $tx_count" "thread_batch_sleep_ms = $thread_batch_sleep_ms" "durable_nonce = $durable_nonce"
+		"duration = $duration" "tx_count = $tx_count" "thread_batch_sleep_ms = $thread_batch_sleep_ms" "durable_nonce = $USE_DURABLE_NONCE"
 		
 # Construct Slack Result_Details Report
 printf -v s_time_start "%s%s" "time_start: $(date --rfc-3339=seconds -u -d @$start_time)" "\\n"

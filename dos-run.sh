@@ -323,9 +323,15 @@ do
 	ret_benchmark=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@$sship 'bash -s' < exec-start-dos-test.sh)
 done
 sleep 2
-
+echo ----- stage: list bech-tps cli  ------
+for sship in "${instance_ip[@]}"
+do
+	echo **sship:$sship
+	ret_ps=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@${sship} 'ps aux -u sol | grep solana-bench-tps')
+	echo **ps-list:$ret_ps
+done
 echo ----- stage: wait for benchmark to end ------
-sleep_time=$(echo "$DURATION" | bc)
+sleep_time=$(echo "$DURATION+2" | bc)
 sleep $sleep_time
 
 ### Get Time Stop
@@ -382,14 +388,6 @@ echo ----- stage: printout run log ------
 if [[ "$PRINT_LOG" == "true" ]];then
 	ret_log=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@${instance_ip[0]} 'cat /home/sol/start-dos-test.nohup')
 fi
-
-echo ----- stage: list bech-tps cli  ------
-for sship in "${instance_ip[@]}"
-do
-	echo **sship:$sship
-	ret_log=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@${instance_ip[0]} 'cat /home/sol/ps.out')
-	echo **$ret_log
-done
 
 echo ----- stage: remove gc instances ------
 if [[ ! "$KEEP_INSTANCES" == "true" ]];then

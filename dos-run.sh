@@ -322,14 +322,7 @@ for sship in "${instance_ip[@]}"
 do
 	ret_benchmark=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@$sship 'bash -s' < exec-start-dos-test.sh)
 done
-sleep 2
-echo ----- stage: list bech-tps cli  ------
-for sship in "${instance_ip[@]}"
-do
-	echo **sship:$sship
-	ret_ps=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@${sship} 'ps aux -u sol | grep solana-bench-tps')
-	echo **ps-list:$ret_ps
-done
+
 echo ----- stage: wait for benchmark to end ------
 sleep_time=$(echo "$DURATION+2" | bc)
 sleep $sleep_time

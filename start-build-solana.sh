@@ -28,7 +28,7 @@ sudo dpkg --configure -a
 sudo apt update
 
 ## pre-install and rust version
-sudo apt-get install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler
+sudo apt-get install -y libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler
 
 rustup default stable
 if [[ $RUST_VER ]];then

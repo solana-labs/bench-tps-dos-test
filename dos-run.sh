@@ -339,8 +339,9 @@ if [[ ! "$SUSTAINED" ]];then
     SUSTAINED="false"
 fi
 echo "SUSTAINED=$SUSTAINED" >> dos-report-env.sh
-echo "SLACK_WEBHOOK=$SLACK_WEBHOOK" >> dos-report-env.sh
-echo "DISCORD_WEBHOOK=$DISCORD_WEBHOOK" >> dos-report-env.sh
+[[ $SLACK_WEBHOOK ]]&&echo "SLACK_WEBHOOK=$SLACK_WEBHOOK" >> dos-report-env.sh
+[[ $DISCORD_WEBHOOK ]]&&echo "DISCORD_WEBHOOK=$DISCORD_WEBHOOK" >> dos-report-env.sh
+[[ $DISCORD_AVATAR_URL ]]&&echo "DISCORD_AVATAR_URL=$DISCORD_AVATAR_URL" >> dos-report-env.sh
 echo "START_TIME=${start_time}" >> dos-report-env.sh
 echo "START_TIME2=${start_time2}" >> dos-report-env.sh
 echo "STOP_TIME=${stop_time}" >> dos-report-env.sh

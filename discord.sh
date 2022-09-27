@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 discord_bot_name="bench-tps dos ${test_type}"
-discord_avatar_url="$DISCROD_AVATAR_URL"
+discord_avatar_url="$DISCORD_AVATAR_URL"
 [[ -z "$DISCORD_WEBHOOK"  ]]&&echo "ERROR : DISCORD_WEBHOOK=$DISCORD_WEBHOOK"&&exit 1
 
 # give discord_txt a value to send to discord channel via webhook

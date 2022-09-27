@@ -40,7 +40,7 @@ printf -v test_report '%s\\n**Test Details:**\\n`%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%
         "$s_tx_count" "$s_tower_vote_dist" "$s_optimistic_slot_elapsed" \
         "$s_ct_stats_block_cost" "$s_ct_stats_tx_count" "$s_ct_stats_number_of_accts" "$blocks_fill"
 # compose embed
-printf -v obj_grafana '{"title": "Grafana", "color": 1127128, "url": \"%s\"}' "$grafana_url"
+printf -v obj_grafana '{"title": "Grafana", "color": 1127128, "url": \"%s\"}' "$gf_url"
 printf -v obj_buildkite '{"title": "Buildkite", "color": 14177041, "url": \"%s\"}' "$BUILDKITE_BUILD_URL"
 
 printf -v  embeds_links '%s, %s' "${obj_grafana}" "${obj_buildkite}"

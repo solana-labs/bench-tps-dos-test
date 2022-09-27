@@ -4,48 +4,19 @@ declare -a instance_ip
 declare -a instance_name
 declare -a instance_zone
 
-# prepare ENV
-if [[ ! "$GIT_TOKEN" ]];then
-	echo GIT_TOKEN env not found, exit
-	exit 1
-fi
-if [[ ! "$ENDPOINT" ]];then
-	echo ENDPOINT env not found, exit
-	exit 1
-fi
+# Check ENVs
+[[ ! "$GIT_TOKEN" ]]&& echo GIT_TOKEN env not found && exit 1
+[[ ! "$ENDPOINT" ]]&& echo ENDPOINT env not found && exit 1
+[[ ! "$NUM_CLIENT" ]]&& echo NUM_CLIENT env not found && exit 1
+[[ ! "$TEST_TYPE" ]]&& echo TEST_TYPE env not found && exit 1
+[[ ! $SLACK_WEBHOOK ]]&&[[ ! $DISCORD_WEBHOOK ]]&& echo no WEBHOOK found&&exit 1
 
-if [[ ! "$NUM_CLIENT" ]];then
-	echo NUM_CLIENT env not found, exit
-	exit 1
-fi
-if [[ ! "$SLACK_WEBHOOK" ]];then
-	echo SLACK_WEBHOOK env not found, exit
-	exit 1
-fi
-if [[ ! "$TEST_TYPE" ]];then
-	echo TEST_TYPE env not found, exit
-	exit 1
-fi
-if [[ ! "$SOLANA_BUILD_BRANCH" ]];then
-	SOLANA_BUILD_BRANCH=same-as-cluster
-	echo SOLANA_BUILD_BRANCH env not found, use $SOLANA_BUILD_BRANCH
-fi
-if [[ ! "$RUN_BENCH_AT_TS_UTC" ]];then
-	RUN_BENCH_AT_TS_UTC=0
-	echo RUN_BENCH_AT_TS_UTC env not found, use $RUN_BENCH_AT_TS_UTC
-fi
-if [[ ! "$TPU_USE_QUIC" ]];then
-	TPU_USE_QUIC="false"
-	echo TPU_USE_QUIC env not found, use $TPU_USE_QUIC
-fi
-if [[ ! "$TPU_DISABLE_QUIC" ]];then
-	TPU_DISABLE_QUIC=0
-	echo TPU_DISABLE_QUIC env not found, use $TPU_DISABLE_QUIC
-fi
-if [[ ! "$KEEP_INSTANCES" ]];then
-	KEEP_INSTANCES="false"
-    echo KEEP_INSTANCES env not found, use $KEEP_INSTANCES
-fi
+[[ ! "$SOLANA_BUILD_BRANCH" ]]&& SOLANA_BUILD_BRANCH=same-as-cluster&& echo SOLANA_BUILD_BRANCH env not found, use $SOLANA_BUILD_BRANCH
+if [[ ! "$RUN_BENCH_AT_TS_UTC" ]]&&	RUN_BENCH_AT_TS_UTC=0 && echo RUN_BENCH_AT_TS_UTC env not found, use $RUN_BENCH_AT_TS_UTC
+[[ ! "$TPU_USE_QUIC" ]]&& TPU_USE_QUIC="false" && echo TPU_USE_QUIC env not found, use $TPU_USE_QUIC
+[[ ! "$TPU_DISABLE_QUIC" ]]&& TPU_DISABLE_QUIC=0 && echo TPU_DISABLE_QUIC env not found, use $TPU_DISABLE_QUIC
+[[ ! "$KEEP_INSTANCES" ]]&& KEEP_INSTANCES="false" && echo KEEP_INSTANCES env not found, use $KEEP_INSTANCES
+
 
 get_time_after() {
 	outcom_in_sec=$(echo ${given_ts} + ${add_secs} | bc) 
@@ -369,6 +340,7 @@ if [[ ! "$SUSTAINED" ]];then
 fi
 echo "SUSTAINED=$SUSTAINED" >> dos-report-env.sh
 echo "SLACK_WEBHOOK=$SLACK_WEBHOOK" >> dos-report-env.sh
+echo "DISCORD_WEBHOOK=$DISCORD_WEBHOOK" >> dos-report-env.sh
 echo "START_TIME=${start_time}" >> dos-report-env.sh
 echo "START_TIME2=${start_time2}" >> dos-report-env.sh
 echo "STOP_TIME=${stop_time}" >> dos-report-env.sh

@@ -36,7 +36,7 @@ if [[ -d "$base/solana" ]];then
     rm -rf solana
 fi
 
-git clone $repo
+git clone $SOLANA_REPO
 cd $base/solana
 if [[ "$GIT_COMMIT" ]];then
     git checkout $GIT_COMMIT

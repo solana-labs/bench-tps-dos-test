@@ -3,23 +3,15 @@
 set -ex
 base=$(pwd)
 ## Check ENV
-if [[ ! "$SOLANA_BUILD_BRANCH" ]];then 
-    echo No SOLANA_BUILD_BRANCH Env and exit > env.output
-    exit 1
-fi
-if [[ ! "$CHANNEL" ]];then
-    CHANNEL=edge
-    echo No CHANNEL Env , use $CHANNEL >> env.output
-fi
+[[ ! "$SOLANA_BUILD_BRANCH" ]]&&[[ ! "$GIT_COMMIT" ]]&& echo No SOLANA_BUILD_BRANCH or GIT_COMMIT > env.output&&exit 1
+[[ ! "$CHANNEL" ]]&& CHANNEL=edge&&echo No CHANNEL , use $CHANNEL >> env.output
+[[ ! "$RUST_VER" ]]&& RUST_VER=default&&echo No RUST_VER use $RUST_VER >> env.output
 
-if [[ ! "$RUST_VER" ]];then 
-    RUST_VER=default
-    echo No RUST_VER Env, use $RUST_VER >> env.output
-fi
 # Printout Env
 echo CHANNEL: $CHANNEL 
 echo RUST_VER: $RUST_VER
 echo SOLANA_BUILD_BRANCH: $SOLANA_BUILD_BRANCH
+echo GIT_COMMIT: $GIT_COMMIT
 
 ## preventing lock-file build fail, 
 ## also need to disable software upgrade in image
@@ -45,7 +37,11 @@ fi
 
 git clone $repo
 cd $base/solana
-git checkout $SOLANA_BUILD_BRANCH
+if [[ "$GIT_COMMIT" ]];then
+    git checkout $GIT_COMMIT
+elif [[ "$SOLANA_BUILD_BRANCH" ]];then
+    git checkout $SOLANA_BUILD_BRANCH
+fi
 # install solana in  /solana/ci
 cd $base/solana/ci
 res=$(CI_OS_NAME=linux DO_NOT_PUBLISH_TAR=true CHANNEL=$CHANNEL ./publish-tarball.sh)

@@ -5,7 +5,6 @@ discord_avatar_url="$DISCORD_AVATAR_URL"
 [[ -z "$DISCORD_WEBHOOK"  ]]&&echo "ERROR : DISCORD_WEBHOOK=$DISCORD_WEBHOOK"&&exit 1
 
 # give discord_txt a value to send to discord channel via webhook
-
 function discord_send(){
     curl -H "Content-Type: application/json" -H "Expect: application/json" -X POST "${DISCORD_WEBHOOK}" -d "${discord_txt}" 2>/dev/null
 }
@@ -50,6 +49,4 @@ d_content="\"content\": \"${test_report}\""
 d_avatar="\"avatar_url\": \"${discord_avatar_url}\""
 d_embeds="\"embeds\":[${embeds_links}]"
 discord_txt="{${d_avatar},${d_username},${d_content},${d_embeds}}"
-echo send txt=$discord_txt
-discord_send
 

@@ -13,6 +13,7 @@ echo CHANNEL: $CHANNEL
 echo RUST_VER: $RUST_VER
 echo SOLANA_BUILD_BRANCH: $SOLANA_BUILD_BRANCH
 echo GIT_COMMIT: $GIT_COMMIT
+echo SOLANA_REPO: $SOLANA_REPO
 
 ## preventing lock-file build fail, 
 ## also need to disable software upgrade in image

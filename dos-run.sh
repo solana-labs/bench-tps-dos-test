@@ -16,7 +16,7 @@ declare -a instance_zone
 [[ ! "$TPU_USE_QUIC" ]]&& TPU_USE_QUIC="false" && echo TPU_USE_QUIC env not found, use $TPU_USE_QUIC
 [[ ! "$TPU_DISABLE_QUIC" ]]&& TPU_DISABLE_QUIC=0 && echo TPU_DISABLE_QUIC env not found, use $TPU_DISABLE_QUIC
 [[ ! "$KEEP_INSTANCES" ]]&& KEEP_INSTANCES="false" && echo KEEP_INSTANCES env not found, use $KEEP_INSTANCES
-
+[[ ! "$SOLANA_REPO"]]&& SOLANA_REPO=https://github.com/solana-labs/solana.git
 
 get_time_after() {
 	outcom_in_sec=$(echo ${given_ts} + ${add_secs} | bc) 
@@ -171,6 +171,7 @@ if [[ "$BUILD_SOLANA" == "true" ]];then
 	sed  -e 19a\\"export CHANNEL=$CHANNEL" exec-start-template.sh > exec-start-build-solana.sh 
 	echo "export SOLANA_BUILD_BRANCH=$SOLANA_BUILD_BRANCH" >> exec-start-build-solana.sh
 	echo "export GIT_COMMIT=$GIT_COMMIT" >> exec-start-build-solana.sh
+	echo "export SOLANA_REPO=$SOLANA_REPO" >> exec-start-build-solana.sh
 	chmod +x exec-start-build-solana.sh
 	cat exec-start-build-solana.sh
 	[[ ! -f "exec-start-build-solana.sh" ]]&& echo "no exec-build-solana.sh found"&& exit 1

@@ -4,6 +4,7 @@ set -ex
 base=$(pwd)
 ## Check ENV
 [[ ! "$SOLANA_BUILD_BRANCH" ]]&&[[ ! "$GIT_COMMIT" ]]&& echo No SOLANA_BUILD_BRANCH or GIT_COMMIT > env.output&&exit 1
+[[ ! "$SOLANA_REPO" ]]&& echo no SOLANA_REPO=$SOLANA_REPO&& exit 1
 [[ ! "$CHANNEL" ]]&& CHANNEL=edge&&echo No CHANNEL , use $CHANNEL >> env.output
 [[ ! "$RUST_VER" ]]&& RUST_VER=default&&echo No RUST_VER use $RUST_VER >> env.output
 
@@ -29,8 +30,7 @@ fi
 rustup update
 
 # set base directory
-# download solana
-repo=https://github.com/solana-labs/solana.git
+
 if [[ -d "$base/solana" ]];then
     rm -rf solana
 fi
@@ -41,7 +41,10 @@ if [[ "$GIT_COMMIT" ]];then
     git checkout $GIT_COMMIT
 elif [[ "$SOLANA_BUILD_BRANCH" ]];then
     git checkout $SOLANA_BUILD_BRANCH
+else 
+    exit 1
 fi
+git branch || true
 # install solana in  /solana/ci
 cd $base/solana/ci
 res=$(CI_OS_NAME=linux DO_NOT_PUBLISH_TAR=true CHANNEL=$CHANNEL ./publish-tarball.sh)

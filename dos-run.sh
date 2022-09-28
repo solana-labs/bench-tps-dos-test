@@ -166,26 +166,18 @@ if [[ ! "$BUILD_SOLANA" ]];then
 fi
 # add information to exec-start-build-solana.sh
 if [[ "$BUILD_SOLANA" == "true" ]];then
-	if [[ ! "$CHANNEL" ]];then
-		CHANNEL=edge
-	fi
-	if [[ -f "exec-start-build-solana.sh" ]];then
-		rm  exec-start-build-solana.sh 
-	fi
+	[[ ! "$CHANNEL" ]]&& CHANNEL=edge
+	[[ -f "exec-start-build-solana.sh" ]]&& rm  exec-start-build-solana.sh 
 	sed  -e 19a\\"export CHANNEL=$CHANNEL" exec-start-template.sh > exec-start-build-solana.sh 
 	echo "export SOLANA_BUILD_BRANCH=$SOLANA_BUILD_BRANCH" >> exec-start-build-solana.sh
+	echo "export GIT_COMMIT=$GIT_COMMIT" >> exec-start-build-solana.sh
 	chmod +x exec-start-build-solana.sh
 	cat exec-start-build-solana.sh
-	if [[ ! -f "exec-start-build-solana.sh" ]];then
-		echo "no exec-build-solana.sh found"
-		exit 1
-	fi
+	[[ ! -f "exec-start-build-solana.sh" ]]&& echo "no exec-build-solana.sh found"&& exit 1
 	echo 'exec  ./start-build-solana.sh > start-build-solana.log' >> exec-start-build-solana.sh
 fi
 # add information to exec-start-dos-test.sh
-if [[ -f "exec-start-dos-test.sh" ]];then
-	rm  exec-start-dos-test.sh
-fi
+[[ -f "exec-start-dos-test.sh" ]]&&	rm  exec-start-dos-test.sh
 
 sed  -e 19a\\"export RPC_ENDPOINT=$ENDPOINT" exec-start-template.sh > exec-start-dos-test.sh
 

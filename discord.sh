@@ -9,7 +9,7 @@ function discord_send(){
     curl -H "Content-Type: application/json" -H "Expect: application/json" -X POST "${DISCORD_WEBHOOK}" -d "${discord_txt}" 2>/dev/null
 }
 
-printf -v test_config '**Test Configuration:**\\n`%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n`' \
+printf -v test_config '**Test Configuration:**\\n```%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n```' \
 		"test-type = $test_type" "client = $client" "branch = $SOLANA_BUILD_BRANCH" "commit = $git_commit" \
 		"cluster version = $cluster_version" "bench-tps-clients = $num_clients" "read-client-keys = $client_keypair_path" \
 		"duration = $duration" "tx_count = $tx_count" "thread_batch_sleep_ms = $thread_batch_sleep_ms" "durable_nonce = $USE_DURABLE_NONCE"
@@ -33,11 +33,13 @@ printf -v s_ct_stats_number_of_accts '%s\\n%s\\n%s\\n%s' \
         "$mean_ct_stats_num_of_accts_txt" "$max_ct_stats_num_of_accts_txt" "$p90_ct_stats_num_of_accts_txt" "$p99_ct_stats_num_of_accts_txt"
 printf -v blocks_fill '%s\\n%s\\n%s\\n%s\\n%s' \
         "$total_blocks_txt" "$blocks_fill_50_txt" "$blocks_fill_90_txt" "$blocks_fill_50_percent_txt" "$blocks_fill_90_percent_txt"
+printf -v buildkite_link  '%s' "[Buildkite]($gf_url)"
+printf -v grafana_link  '%s' "[Grafana]($gf_url)"
 # compose report without link
-printf -v test_report '%s\\n**Test Details:**\\n`%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s`' \
+printf -v test_report '%s\\n**Test Details:**\\n```%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s```' \
         "$test_config" "$time_range" "$slot_range" \
         "$s_tx_count" "$s_tower_vote_dist" "$s_optimistic_slot_elapsed" \
-        "$s_ct_stats_block_cost" "$s_ct_stats_tx_count" "$s_ct_stats_number_of_accts" "$blocks_fill"
+        "$s_ct_stats_block_cost" "$s_ct_stats_tx_count" "$s_ct_stats_number_of_accts" "$blocks_fill" "$buildkite_link" "$grafana_link"
 # compose embed
 printf -v obj_grafana '{"title": "Grafana", "color": 1127128, "url": \"%s\"}' "$gf_url"
 printf -v obj_buildkite '{"title": "Buildkite", "color": 14177041, "url": \"%s\"}' "$BUILDKITE_BUILD_URL"
@@ -49,4 +51,3 @@ d_content="\"content\": \"${test_report}\""
 d_avatar="\"avatar_url\": \"${discord_avatar_url}\""
 d_embeds="\"embeds\":[${embeds_links}]"
 discord_txt="{${d_avatar},${d_username},${d_content},${d_embeds}}"
-

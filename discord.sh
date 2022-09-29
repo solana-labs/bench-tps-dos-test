@@ -33,21 +33,17 @@ printf -v s_ct_stats_number_of_accts '%s\\n%s\\n%s\\n%s' \
         "$mean_ct_stats_num_of_accts_txt" "$max_ct_stats_num_of_accts_txt" "$p90_ct_stats_num_of_accts_txt" "$p99_ct_stats_num_of_accts_txt"
 printf -v blocks_fill '%s\\n%s\\n%s\\n%s\\n%s' \
         "$total_blocks_txt" "$blocks_fill_50_txt" "$blocks_fill_90_txt" "$blocks_fill_50_percent_txt" "$blocks_fill_90_percent_txt"
-printf -v buildkite_link  '%s' "[Buildkite]($gf_url)"
+printf -v buildkite_link  '%s' "[Buildkite]($BUILDKITE_BUILD_URL)"
 printf -v grafana_link  '%s' "[Grafana]($gf_url)"
 # compose report without link
-printf -v test_report '%s\\n**Test Details:**\\n```%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s```' \
+printf -v test_report '%s    %s\\n%s\\n**Test Details:**\\n```%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n```' \
+        "$grafana_link" "$buildkite_link" \
         "$test_config" "$time_range" "$slot_range" \
         "$s_tx_count" "$s_tower_vote_dist" "$s_optimistic_slot_elapsed" \
-        "$s_ct_stats_block_cost" "$s_ct_stats_tx_count" "$s_ct_stats_number_of_accts" "$blocks_fill" "$buildkite_link" "$grafana_link"
-# compose embed
-printf -v obj_grafana '{"title": "Grafana", "color": 1127128, "url": \"%s\"}' "$gf_url"
-printf -v obj_buildkite '{"title": "Buildkite", "color": 14177041, "url": \"%s\"}' "$BUILDKITE_BUILD_URL"
+        "$s_ct_stats_block_cost" "$s_ct_stats_tx_count" "$s_ct_stats_number_of_accts" "$blocks_fill" 
 
-printf -v  embeds_links '%s, %s' "${obj_grafana}" "${obj_buildkite}"
-
+# compose discord message
 d_username="\"username\": \"${discord_bot_name}\""
 d_content="\"content\": \"${test_report}\""
 d_avatar="\"avatar_url\": \"${discord_avatar_url}\""
-d_embeds="\"embeds\":[${embeds_links}]"
-discord_txt="{${d_avatar},${d_username},${d_content},${d_embeds}}"
+discord_txt="{${d_avatar},${d_username},${d_content}}"

@@ -16,7 +16,7 @@ printf -v test_config '**Test Configuration:**\\n```%s\\n%s\\n%s\\n%s\\n%s\\n%s\
 
 # Construct Slack Result_Details Report
 printf -v time_range 'time range: %s ~ %s' \
-        "$(date --rfc-3339=seconds -u -d @1664258911)" "$(date --rfc-3339=seconds -u -d @1664259011)"
+        "$(date --rfc-3339=seconds -u -d @$start_time)" "$(date --rfc-3339=seconds -u -d @$stop_time)"
 printf -v slot_range '%s\\n%s' \
         "$start_slot_txt" "$end_slot_txt"
 printf -v s_tx_count '%s\\n%s\\n%s\\n%s' \

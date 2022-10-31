@@ -216,6 +216,9 @@ fi
 if [[ "$USE_DURABLE_NONCE" ]];then
     echo "export USE_DURABLE_NONCE=$USE_DURABLE_NONCE" >> exec-start-dos-test.sh
 fi
+if [[ "$SIMULATE_MINT_PERCENT" ]];then
+    echo "export SIMULATE_MINT_PERCENT=$SIMULATE_MINT_PERCENT" >> exec-start-dos-test.sh
+fi
 if [[ "$KEYPAIR_FILE" ]];then
     echo "export KEYPAIR_FILE=$KEYPAIR_FILE" >> exec-start-dos-test.sh
 fi

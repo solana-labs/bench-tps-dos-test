@@ -69,6 +69,15 @@ else
 fi
 echo use_durable_nonce=$use_durable_nonce >> dos-env.out
 
+if [[ "$SIMULATE_MINT_PERCENT" != "" ]];then
+   simulate_mint_percent_flag="--simulate-mint-percent"
+   simulate_mint_percent_value=$SIMULATE_MINT_PERCENT
+else  
+    simulate_mint_percent_flag=""
+    simulate_mint_percent_value=""
+fi
+echo $simulate_mint_percent_flag=$simulate_mint_percent_value >> dos-env.out
+
 if [[ "$TPU_DISABLE_QUIC" == "true" ]];then
     tpu_disable_quic="--tpu-disable-quic"
 else  
@@ -146,7 +155,7 @@ echo KEYPAIR_FILE $KEYPAIR_FILE
 echo keyfile : $base/$KEYPAIR_DIR/$KEYPAIR_FILE
 
 benchmark=$(./solana-bench-tps -u $RPC_ENDPOINT --identity $base/$ID_DIR/$ID_FILE --read-client-keys $base/$KEYPAIR_DIR/$KEYPAIR_FILE \
-		$use_client $sustained $tpu_use_quic $use_durable_nonce $tpu_disable_quic  --duration $duration --tx_count $tx_count --thread-batch-sleep-ms $thread_batch_sleep_ms &)
+		$use_client $sustained $tpu_use_quic $use_durable_nonce $tpu_disable_quic  $simulate_mint_percent_flag $simulate_mint_percent_value --duration $duration --tx_count $tx_count --thread-batch-sleep-ms $thread_batch_sleep_ms &)
 sleep 2
 cd $base
 ret_ps=$(ps aux | grep solana-bench-tps)

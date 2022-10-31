@@ -25,6 +25,7 @@ source dos-report-env.sh
 # No env use default
 [[ ! $THREAD_BATCH_SLEEP_MS ]]&& THREAD_BATCH_SLEEP_MS=1&&echo THREAD_BATCH_SLEEP_MS env not found, use $THREAD_BATCH_SLEEP_MS
 [[ ! $USE_DURABLE_NONCE ]]&& USE_DURABLE_NONCE=false&& echo USE_DURABLE_NONCE env not found, use $USE_DURABLE_NONCE
+[[ ! $SIMULATE_MINT_PERCENT ]]&& echo SIMULATE_MINT_PERCENT env not found, use $SIMULATE_MINT_PERCENT
 if [[ -n $BUILDKITE_BUILD_URL ]] ; then
 	BUILD_BUTTON_TEXT="Build Kite Job"
 else

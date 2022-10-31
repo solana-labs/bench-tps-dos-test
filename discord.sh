@@ -9,10 +9,11 @@ function discord_send(){
     curl -H "Content-Type: application/json" -H "Expect: application/json" -X POST "${DISCORD_WEBHOOK}" -d "${discord_txt}" 2>/dev/null
 }
 
-printf -v test_config '**Test Configuration:**\\n```%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n```' \
+printf -v test_config '**Test Configuration:**\\n```%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n```' \
 		"test-type = $test_type" "client = $client" "branch = $SOLANA_BUILD_BRANCH" "commit = $git_commit" \
 		"cluster version = $cluster_version" "bench-tps-clients = $num_clients" "read-client-keys = $client_keypair_path" \
-		"duration = $duration" "tx_count = $tx_count" "thread_batch_sleep_ms = $thread_batch_sleep_ms" "durable_nonce = $USE_DURABLE_NONCE"
+		"duration = $duration" "tx_count = $tx_count" "thread_batch_sleep_ms = $thread_batch_sleep_ms" "durable_nonce = $USE_DURABLE_NONCE" \
+                "--thread-batch-sleep-ms  = $simulate_mint_percent_value"
 
 # Construct Slack Result_Details Report
 printf -v time_range 'time range: %s ~ %s' \

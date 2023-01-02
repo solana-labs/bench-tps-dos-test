@@ -14,7 +14,7 @@ source dos-report-env.sh
 [[ ! $INFLUX_ORG_NAME ]]&& echo INFLUX_ORG_NAME env not found&&exit 1
 
 [[ ! $KEYPAIR_FILE ]]&& KEYPAIR_FILE="NA"&& echo KEYPAIR_FILE env not found, use $KEYPAIR_FILE
-[[ ! $INFLUX_HOST ]]&& INFLUX_HOST="https://us-west-2-2.aws.cloud2.influxdata.com"&&echo INFLUX_HOST env not found, use $INFLUX_HOST
+[[ ! $INFLUX_HOST ]]&& echo INFLUX_HOST env not found, use $INFLUX_HOST&&exit 1
 [[ ! $DURATION ]]&&	echo DURATION env not found, use $DURATION&&exit 1
 [[ ! $TX_COUNT ]]&&	echo TX_COUNT env not found, use $TX_COUNT&&exit 1
 [[ ! $TEST_TYPE ]]&&	echo TEST_TYPE env not found, use $TEST_TYPE&&exit 1

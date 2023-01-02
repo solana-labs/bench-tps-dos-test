@@ -42,7 +42,7 @@ client_keypair_path="keypair-configs/$KEYPAIR_FILE"
 duration=$DURATION
 tx_count=$TX_COUNT
 thread_batch_sleep_ms=$THREAD_BATCH_SLEEP_MS
-API_V2_HOST="${INFLUX_HOST}/api/v2/query?org=${INFLUX_ORG_NAME}"
+API_V2_HOST="${INFLUX_HOST}/api/v2/query"
 HEADER_AUTH="Authorization: Token ${INFLUX_TOKEN}"
 CURL_TIMEOUT=12
 start_time=$START_TIME

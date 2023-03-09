@@ -47,7 +47,9 @@ else
 fi
 git branch || true
 # install solana in  /solana/ci
-cd $base/solana/ci
-res=$(CI_OS_NAME=linux DO_NOT_PUBLISH_TAR=true CHANNEL=$CHANNEL ./publish-tarball.sh)
+#cd $base/solana/ci
+# res=$(CI_OS_NAME=linux DO_NOT_PUBLISH_TAR=true CHANNEL=$CHANNEL ./publish-tarball.sh)
+cd $base/solana/bech-tps
+res=$(cargo build --release)
 echo build result $res
 exit 0

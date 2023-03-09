@@ -140,7 +140,8 @@ ret_config_metric=$(exec ./configure-metrics.sh || true )
 echo $ret_config_metric
 
 # benchmark exec
-cd $base/solana/solana-release/bin
+# cd $base/solana/solana-release/bin
+cd $base/solana/target/release
 echo --- start of benchmark $(date)
 echo KEYPAIR_FILE $KEYPAIR_FILE
 echo keyfile : $base/$KEYPAIR_DIR/$KEYPAIR_FILE

@@ -9,7 +9,7 @@ declare -a instance_zone
 [[ ! "$ENDPOINT" ]]&& echo ENDPOINT env not found && exit 1
 [[ ! "$NUM_CLIENT" ]]&& echo NUM_CLIENT env not found && exit 1
 [[ ! "$TEST_TYPE" ]]&& echo TEST_TYPE env not found && exit 1
-[[ ! $SLACK_WEBHOOK ]]&&[[ ! $DISCORD_WEBHOOK ]]&& echo no WEBHOOK found&&exit 1
+[[ ! $SCHEDULED_RUN ]]||([[ ! $SLACK_WEBHOOK ]]&&[[ ! $DISCORD_WEBHOOK ]]&& echo no WEBHOOK found&&exit 1)
 
 [[ ! "$SOLANA_BUILD_BRANCH" ]]&& SOLANA_BUILD_BRANCH=same-as-cluster&& echo SOLANA_BUILD_BRANCH env not found, use $SOLANA_BUILD_BRANCH
 [[ ! "$RUN_BENCH_AT_TS_UTC" ]]&& RUN_BENCH_AT_TS_UTC=0 && echo RUN_BENCH_AT_TS_UTC env not found, use $RUN_BENCH_AT_TS_UTC

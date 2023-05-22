@@ -32,8 +32,8 @@ function create_gce() {
 		--shielded-integrity-monitoring \
 		--format="flattened(name,networkInterfaces[0].accessConfigs[0].natIP)" \
 		--reservation-affinity=any)
+	echo $ret_create > ret_create.out # will be used for parsing ip and name
     gce_create_exit="$?"
-	echo "$ret_create" > ret_create.out
     # testing
     # ret_create="--- name: mango-bencher-tester-221219-07-44-58 nat_ip: 34.83.208.239"
     # echo $ret_create > ret_create.out

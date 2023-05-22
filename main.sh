@@ -4,15 +4,8 @@ set -ex
 dos_program_dir=$(pwd)
 source utils.sh
 echo ----- stage: show envs upload as an artifcat ---- 
-download_file "gs://$ARTIFACT_BUCKET/$BUILDKITE_PIPELINE_ID/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID" ./
-if [[ -f "env-artifact.sh" ]];then
-    sleep 1
 # shellcheck source=/dev/null
 source env-artifact.sh
-else
-    echo "env-artifact.sh does not exist"
-    exit 1
-fi
 
 
 echo ----- stage: machines and build and upload mango-simulation ---

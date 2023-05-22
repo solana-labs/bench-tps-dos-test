@@ -66,8 +66,8 @@ echo "BUILDKITE_BUILD_ID=$BUILDKITE_BUILD_ID" >> env-artifact.sh
 echo "BUILDKITE_JOB_ID=$BUILDKITE_JOB_ID" >> env-artifact.sh
 echo "BUILDKITE_BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER" >> env-artifact.sh
 ## artifact address
-echo "DOS_BENCH_TPS_PRIVATE_BUCKET=$DOS_BENCH_TPS_PRIVATE_BUCKET" > env-artifact.sh
-echo "DOS_BENCH_TPS_LOG_BUCKET=$DOS_BENCH_TPS_LOG_BUCKET" > env-artifact.sh
+echo "DOS_BENCH_TPS_PRIVATE_BUCKET=$DOS_BENCH_TPS_PRIVATE_BUCKET" >> env-artifact.sh
+echo "DOS_BENCH_TPS_LOG_BUCKET=$DOS_BENCH_TPS_LOG_BUCKET" >> env-artifact.sh
 echo "ARTIFACT_BUCKET=$ARTIFACT_BUCKET" >> env-artifact.sh
 echo "ENV_ARTIFACT_FILE=env-artifact.sh" >> env-artifact.sh
 echo "BENCH_TPS_ARTIFACT_FILE=solana-bench-tps" >> env-artifact.sh

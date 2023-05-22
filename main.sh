@@ -23,6 +23,20 @@ do
     (( client_num++ )) || true
 done
 
+echo ----- stage: run dos test ---
+client_num=1
+for sship in "${instance_ip[@]}"
+do
+    (( idx=$client_num -1 )) || true
+    [[ $client_num -eq 1 ]] && arg2="true" || arg2="false"
+    [[ $RUN_KEEPER != "true" ]] && arg2="false" # override the arg2 base on input from Steps
+    acct=${accounts[$idx]}
+    # run start-dos-test.sh which in client machine
+    ret_run_dos=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@$sship "nohup /home/sol/start-dos-test.sh $acct $arg2 1> start-dos-test.nohup 2> start-dos-test.nohup &")
+    (( client_num++ )) || true
+    [[ $client_num -gt ${#accounts[@]} ]] && client_num=1    
+done
+
 exit 0
 
 

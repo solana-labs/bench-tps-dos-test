@@ -56,21 +56,3 @@ ret_ps=$(ps aux | grep solana-bench-tps)
 echo $ret_ps > ps.out
 echo --- end of benchmark $(date)
 
-
-# download_file() {
-# 	for retry in 0 1
-# 	do
-# 		if [[ $retry -gt 1 ]];then
-# 			break
-# 		fi
-
-# 		gsutil cp  gs://bench-tps-dos/$file_in_bucket ./
-
-# 		if [[ ! -f "$file_in_bucket" ]];then
-# 			echo "NO $file_in_bucket found, retry"
-# 		else
-# 			break
-# 		fi
-# 	done
-# }
-

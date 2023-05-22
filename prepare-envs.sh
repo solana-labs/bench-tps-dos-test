@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -ex
 echo ----- stage: checkout buildkite Steps Env ------ 
+## Buckets Memo
+## There are 3 buckets in total
+## 1.ARTIFACT_BUCKET : dos-agent bucket, share with other program use dos-agent as buildkite agent
+## 2.DOS_BENCH_TPS_PRIVATE_BUCKET : private bucket, store private data
+## 3.DOS_BENCH_TPS_LOG_BUCKET : log bucket
+
 # Check ENVs
 [[ ! "$TEST_TYPE" ]]&& echo TEST_TYPE env not found && exit 1
 [[ ! "$ENDPOINT" ]]&& echo ENDPOINT env not found && exit 1
@@ -16,13 +22,15 @@ echo ----- stage: checkout buildkite Steps Env ------
 [[ ! "$KEYPAIR_FILE" ]]&&KEYPAIR_FILE="large-keypairs.yaml"
 [[ ! "$ID_FILE" ]]&&ID_FILE="id_ed25519_dos_test"
 [[ ! "$BENCH_TPS_ARTIFACT_FILE" ]]&& BENCH_TPS_ARTIFACT_FILE=solan-bench-tps
-[[ ! "$BENCH_TPS_PRIVATE_BUCKET" ]]&& BENCH_TPS_PRIVATE_BUCKET=bench-tps-dos-private
+[[ ! "$ARTIFACT_BUCKET" ]]&& ARTIFACT_BUCKET=buildkite-dos-agent
+[[ ! "$DOS_BENCH_TPS_PRIVATE_BUCKET" ]]&& DOS_BENCH_TPS_PRIVATE_BUCKET=bench-tps-dos-private
+[[ ! "$DOS_BENCH_TPS_LOG_BUCKET" ]]&& DOS_BENCH_TPS_LOG_BUCKET="bench-tps-dos-log"
 [[ ! "$SOLANA_REPO" ]]&& SOLANA_REPO=https://github.com/solana-labs/solana.git
 [[ ! "$SOLANA_BUILD_BRANCH" ]]&& SOLANA_BUILD_BRANCH=master
 [[ ! "$NUM_CLIENT" ]]&& echo NUM_CLIENT env not found && exit 1
 [[ ! "$KEEP_INSTANCES" ]]&& KEEP_INSTANCES="false" && echo KEEP_INSTANCES env not found, use $KEEP_INSTANCES
 [[ ! "$RUN_BENCH_AT_TS_UTC" ]]&& RUN_BENCH_AT_TS_UTC=0 && echo RUN_BENCH_AT_TS_UTC env not found, use $RUN_BENCH_AT_TS_UTC
-[[ ! "$DOS_BENCH_TPS_BUCKET" ]]&& DOS_BENCH_TPS_BUCKET="bench-tps-dos"
+
 [[ ! "$SLACK_WEBHOOK" ]]&&[[ ! "$DISCORD_WEBHOOK" ]]&& echo no WEBHOOK found&&exit 1
 
 source utils.sh
@@ -48,7 +56,6 @@ echo "GIT_TOKEN=$GIT_TOKEN" > env-artifact.sh
 echo "SOLANA_REPO=$SOLANA_REPO" > env-artifact.sh
 echo "SOLANA_BUILD_BRANCH=$SOLANA_BUILD_BRANCH" > env-artifact.sh
 echo "KEEP_INSTANCES=$KEEP_INSTANCES" > env-artifact.sh
-echo "DOS_BENCH_TPS_BUCKET=$DOS_BENCH_TPS_BUCKET" > env-artifact.sh
 echo "RUN_BENCH_AT_TS_UTC=$RUN_BENCH_AT_TS_UTC" > env-artifact.sh
 echo "SLACK_WEBHOOK=$SLACK_WEBHOOK" > env-artifact.sh
 
@@ -59,6 +66,8 @@ echo "BUILDKITE_BUILD_ID=$BUILDKITE_BUILD_ID" >> env-artifact.sh
 echo "BUILDKITE_JOB_ID=$BUILDKITE_JOB_ID" >> env-artifact.sh
 echo "BUILDKITE_BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER" >> env-artifact.sh
 ## artifact address
+echo "DOS_BENCH_TPS_PRIVATE_BUCKET=$DOS_BENCH_TPS_PRIVATE_BUCKET" > env-artifact.sh
+echo "DOS_BENCH_TPS_LOG_BUCKET=$DOS_BENCH_TPS_LOG_BUCKET" > env-artifact.sh
 echo "ARTIFACT_BUCKET=$ARTIFACT_BUCKET" >> env-artifact.sh
 echo "ENV_ARTIFACT_FILE=env-artifact.sh" >> env-artifact.sh
 echo "BENCH_TPS_ARTIFACT_FILE=solana-bench-tps" >> env-artifact.sh

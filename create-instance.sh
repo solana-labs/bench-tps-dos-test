@@ -5,11 +5,8 @@ declare -a instance_name
 declare -a instance_zone
 create_interval=60
 [[ ! "$GC_IMAGE" ]] && GC_IMAGE=mango-simulation-client-230508 && echo GC_IMAGE env not found, use $GC_IMAGE
-if [[ ! "$AVAILABLE_ZONE" ]];then
-	available_zone=( us-west2-b asia-east1-b asia-northeast1-a )
-else
-	available_zone=( $AVAILABLE_ZONE )
-fi
+[[ ! "$AVAILABLE_ZONE" ]]&&	available_zone=( us-west2-b asia-east1-b asia-northeast1-a ) || available_zone=( "$AVAILABLE_ZONE" )
+
 
 function create_gce() {
 	local vm_name=bench-tps-client-$(date +%y%m%d-%H-%M-%S)
@@ -56,13 +53,13 @@ function create_machines() {
     instance_ip=()
     instance_name=()
     instance_zone=()
-    while i in $(seq 1 "$1")
+    for _ in $(seq 1 "$1")
     do
         if [[ $count -ge ${#available_zone[@]} ]];then
             count=0
         fi 
         zone=${available_zone[$count]}
-        create_gce $zone
+        create_gce "$zone"
 		(( count+=1 )) || true
         echo "gc instance is created in $zone"
         sleep $create_interval # avoid too quick build
@@ -73,7 +70,7 @@ function create_machines() {
 }
 
 function append_machines() {
-    while i in $(seq 1 "$1")
+    for _ in $(seq 1 "$1")
     do
         if [[ $count -ge ${#available_zone[@]} ]];then
             count=0

@@ -22,8 +22,19 @@ echo ----- stage: checkout buildkite Steps Env ------
 [[ ! "$KEYPAIR_FILE" ]]&&KEYPAIR_FILE="large-keypairs.yaml"
 [[ ! "$ID_FILE" ]]&&ID_FILE="id_ed25519_dos_test"
 [[ ! "$BENCH_TPS_ARTIFACT_FILE" ]]&& BENCH_TPS_ARTIFACT_FILE=solan-bench-tps
-[[ ! "$ARTIFACT_BUCKET" ]]&& ARTIFACT_BUCKET=buildkite-dos-agent && export ARTIFACT_BUCKET="$ARTIFACT_BUCKET"
-[[ ! "$ENV_ARTIFACT_FILE" ]]&& ENV_ARTIFACT_FILE=env-artifact.sh && export ENV_ARTIFACT_FILE="$ENV_ARTIFACT_FILE"
+if [[ ! "$ARTIFACT_BUCKET" ]];then 
+    ARTIFACT_BUCKET=buildkite-dos-agent 
+    export ARTIFACT_BUCKET="$ARTIFACT_BUCKET"
+else
+    export ARTIFACT_BUCKET="$ARTIFACT_BUCKET"
+fi
+
+if [[ ! "$ENV_ARTIFACT_FILE" ]];then 
+    ENV_ARTIFACT_FILE=env-artifact.sh 
+    export ENV_ARTIFACT_FILE="$ENV_ARTIFACT_FILE"
+else
+    export ENV_ARTIFACT_FILE="$ENV_ARTIFACT_FILE"
+fi
 [[ ! "$DOS_BENCH_TPS_PRIVATE_BUCKET" ]]&& DOS_BENCH_TPS_PRIVATE_BUCKET=bench-tps-dos-private
 [[ ! "$DOS_BENCH_TPS_LOG_BUCKET" ]]&& DOS_BENCH_TPS_LOG_BUCKET="bench-tps-dos-log"
 [[ ! "$SOLANA_REPO" ]]&& SOLANA_REPO=https://github.com/solana-labs/solana.git

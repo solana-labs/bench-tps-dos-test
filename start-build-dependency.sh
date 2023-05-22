@@ -36,7 +36,7 @@ download_file() {
 # Download env-artifact.sh
 download_file "gs://$2" "$3" "$HOME"
 sleep 1
-[[ ! -f "env-artifact.sh" ]] && echo no "env-artifact.sh" downloaded && exit 2
+[[ ! -f "$3" ]] && echo no "$3" downloaded && exit 2
 # shellcheck source=/dev/null
 source $HOME/.profile
 # shellcheck source=env-artifact.sh

@@ -23,6 +23,7 @@ echo ----- stage: checkout buildkite Steps Env ------
 [[ ! "$ID_FILE" ]]&&ID_FILE="id_ed25519_dos_test"
 [[ ! "$BENCH_TPS_ARTIFACT_FILE" ]]&& BENCH_TPS_ARTIFACT_FILE=solan-bench-tps
 [[ ! "$ARTIFACT_BUCKET" ]]&& ARTIFACT_BUCKET=buildkite-dos-agent && export ARTIFACT_BUCKET="$ARTIFACT_BUCKET"
+[[ ! "$ENV_ARTIFACT_FILE" ]]&& ENV_ARTIFACT_FILE=buildkite-dos-agent && export ENV_ARTIFACT_FILE="$ENV_ARTIFACT_FILE"
 [[ ! "$DOS_BENCH_TPS_PRIVATE_BUCKET" ]]&& DOS_BENCH_TPS_PRIVATE_BUCKET=bench-tps-dos-private
 [[ ! "$DOS_BENCH_TPS_LOG_BUCKET" ]]&& DOS_BENCH_TPS_LOG_BUCKET="bench-tps-dos-log"
 [[ ! "$SOLANA_REPO" ]]&& SOLANA_REPO=https://github.com/solana-labs/solana.git
@@ -46,30 +47,30 @@ chmod 600 id_ed25519_dos_test
 
 echo ----- stage: prepare env-artifact for clients ------
 ## Mango-simulation Envs
-echo "ENDPOINT=$ENDPOINT" >> env-artifact.sh
-echo "NUM_CLIENT=$NUM_CLIENT" >> env-artifact.sh
-echo "TEST_TYPE=$TEST_TYPE" >> env-artifact.sh
-echo "TPU_USE_QUIC=$TPU_USE_QUIC" >> env-artifact.sh
-echo "TPU_DISABLE_QUIC=$TPU_DISABLE_QUIC" >> env-artifact.sh
+echo "ENDPOINT=$ENDPOINT" >> "$ENV_ARTIFACT_FILE"
+echo "NUM_CLIENT=$NUM_CLIENT" >> "$ENV_ARTIFACT_FILE"
+echo "TEST_TYPE=$TEST_TYPE" >> "$ENV_ARTIFACT_FILE"
+echo "TPU_USE_QUIC=$TPU_USE_QUIC" >> "$ENV_ARTIFACT_FILE"
+echo "TPU_DISABLE_QUIC=$TPU_DISABLE_QUIC" >> "$ENV_ARTIFACT_FILE"
 
-echo "GIT_TOKEN=$GIT_TOKEN" >> env-artifact.sh
-echo "SOLANA_REPO=$SOLANA_REPO" >> env-artifact.sh
-echo "SOLANA_BUILD_BRANCH=$SOLANA_BUILD_BRANCH" >> env-artifact.sh
-echo "KEEP_INSTANCES=$KEEP_INSTANCES" >> env-artifact.sh
-echo "RUN_BENCH_AT_TS_UTC=$RUN_BENCH_AT_TS_UTC" >> env-artifact.sh
-echo "SLACK_WEBHOOK=$SLACK_WEBHOOK" >> env-artifact.sh
+echo "GIT_TOKEN=$GIT_TOKEN" >> "$ENV_ARTIFACT_FILE"
+echo "SOLANA_REPO=$SOLANA_REPO" >> "$ENV_ARTIFACT_FILE"
+echo "SOLANA_BUILD_BRANCH=$SOLANA_BUILD_BRANCH" >> "$ENV_ARTIFACT_FILE"
+echo "KEEP_INSTANCES=$KEEP_INSTANCES" >> "$ENV_ARTIFACT_FILE"
+echo "RUN_BENCH_AT_TS_UTC=$RUN_BENCH_AT_TS_UTC" >> "$ENV_ARTIFACT_FILE"
+echo "SLACK_WEBHOOK=$SLACK_WEBHOOK" >> "$ENV_ARTIFACT_FILE"
 
 # buildkite build envs
-echo "BUILDKITE_BRANCH=$BUILDKITE_BRANCH" >> env-artifact.sh
-echo "BUILDKITE_PIPELINE_ID=$BUILDKITE_PIPELINE_ID" >> env-artifact.sh
-echo "BUILDKITE_BUILD_ID=$BUILDKITE_BUILD_ID" >> env-artifact.sh
-echo "BUILDKITE_JOB_ID=$BUILDKITE_JOB_ID" >> env-artifact.sh
-echo "BUILDKITE_BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER" >> env-artifact.sh
+echo "BUILDKITE_BRANCH=$BUILDKITE_BRANCH" >> "$ENV_ARTIFACT_FILE"
+echo "BUILDKITE_PIPELINE_ID=$BUILDKITE_PIPELINE_ID" >> "$ENV_ARTIFACT_FILE"
+echo "BUILDKITE_BUILD_ID=$BUILDKITE_BUILD_ID" >> "$ENV_ARTIFACT_FILE"
+echo "BUILDKITE_JOB_ID=$BUILDKITE_JOB_ID" >> "$ENV_ARTIFACT_FILE"
+echo "BUILDKITE_BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER" >> "$ENV_ARTIFACT_FILE"
 ## artifact address
-echo "DOS_BENCH_TPS_PRIVATE_BUCKET=$DOS_BENCH_TPS_PRIVATE_BUCKET" >> env-artifact.sh
-echo "DOS_BENCH_TPS_LOG_BUCKET=$DOS_BENCH_TPS_LOG_BUCKET" >> env-artifact.sh
-echo "ARTIFACT_BUCKET=$ARTIFACT_BUCKET" >> env-artifact.sh
-echo "ENV_ARTIFACT_FILE=env-artifact.sh" >> env-artifact.sh
-echo "BENCH_TPS_ARTIFACT_FILE=solana-bench-tps" >> env-artifact.sh
-cat dos-metrics-env.sh >> env-artifact.sh
+echo "DOS_BENCH_TPS_PRIVATE_BUCKET=$DOS_BENCH_TPS_PRIVATE_BUCKET" >> "$ENV_ARTIFACT_FILE"
+echo "DOS_BENCH_TPS_LOG_BUCKET=$DOS_BENCH_TPS_LOG_BUCKET" >> "$ENV_ARTIFACT_FILE"
+echo "ARTIFACT_BUCKET=$ARTIFACT_BUCKET" >> "$ENV_ARTIFACT_FILE"
+echo "ENV_ARTIFACT_FILE=$ENV_ARTIFACT_FILE" >> "$ENV_ARTIFACT_FILE"
+echo "BENCH_TPS_ARTIFACT_FILE=solana-bench-tps" >> "$ENV_ARTIFACT_FILE"
+cat dos-metrics-env.sh >> "$ENV_ARTIFACT_FILE"
 exit 0

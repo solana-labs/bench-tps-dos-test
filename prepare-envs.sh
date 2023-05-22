@@ -4,13 +4,22 @@ echo ----- stage: checkout buildkite Steps Env ------
 # Check ENVs
 [[ ! "$TEST_TYPE" ]]&& echo TEST_TYPE env not found && exit 1
 [[ ! "$ENDPOINT" ]]&& echo ENDPOINT env not found && exit 1
-[[ ! "$NUM_CLIENT" ]]&& echo NUM_CLIENT env not found && exit 1
 [[ ! "$TPU_USE_QUIC" ]]&& TPU_USE_QUIC="false" && echo TPU_USE_QUIC env not found, use $TPU_USE_QUIC
 [[ ! "$TPU_DISABLE_QUIC" ]]&& TPU_DISABLE_QUIC=0 && echo TPU_DISABLE_QUIC env not found, use $TPU_DISABLE_QUIC
+[[ ! "$USE_TPU_CLIENT" ]] && USE_TPU_CLIENT="true"
+
 # CI ENVs
 [[ ! "$GIT_TOKEN" ]]&& echo GIT_TOKEN env not found && exit 1
+[[ ! "$GIT_REPO" ]]&& GIT_REPO="https://github.com/solana-labs/bench-tps-dos-test.git"
+[[ ! "$GIT_REPO_DIR" ]]&& GIT_REPO_DIR="bench-tps-dos-test"
+[[ ! "$DOS_FOUNDER_FILE" ]]&&DOS_FOUNDER_FILE="testnet-dos-funder.json"
+[[ ! "$KEYPAIR_FILE" ]]&&KEYPAIR_FILE="large-keypairs.yaml"
+[[ ! "$ID_FILE" ]]&&ID_FILE="id_ed25519_dos_test"
+[[ ! "$BENCH_TPS_ARTIFACT_FILE" ]]&& BENCH_TPS_ARTIFACT_FILE=solan-bench-tps
+[[ ! "$BENCH_TPS_PRIVATE_BUCKET" ]]&& BENCH_TPS_PRIVATE_BUCKET=bench-tps-dos-private
 [[ ! "$SOLANA_REPO" ]]&& SOLANA_REPO=https://github.com/solana-labs/solana.git
-[[ ! "$SOLANA_BUILD_BRANCH" ]]&& SOLANA_BUILD_BRANCH=same-as-cluster&& echo SOLANA_BUILD_BRANCH env not found, use $SOLANA_BUILD_BRANCH
+[[ ! "$SOLANA_BUILD_BRANCH" ]]&& SOLANA_BUILD_BRANCH=master
+[[ ! "$NUM_CLIENT" ]]&& echo NUM_CLIENT env not found && exit 1
 [[ ! "$KEEP_INSTANCES" ]]&& KEEP_INSTANCES="false" && echo KEEP_INSTANCES env not found, use $KEEP_INSTANCES
 [[ ! "$RUN_BENCH_AT_TS_UTC" ]]&& RUN_BENCH_AT_TS_UTC=0 && echo RUN_BENCH_AT_TS_UTC env not found, use $RUN_BENCH_AT_TS_UTC
 [[ ! "$DOS_BENCH_TPS_BUCKET" ]]&& DOS_BENCH_TPS_BUCKET="bench-tps-dos"
@@ -52,6 +61,6 @@ echo "BUILDKITE_BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER" >> env-artifact.sh
 ## artifact address
 echo "ARTIFACT_BUCKET=$ARTIFACT_BUCKET" >> env-artifact.sh
 echo "ENV_ARTIFACT_FILE=env-artifact.sh" >> env-artifact.sh
-echo "MANGO_SIMULATION_ARTIFACT_FILE=mango-simulation" >> env-artifact.sh
+echo "BENCH_TPS_ARTIFACT_FILE=solana-bench-tps" >> env-artifact.sh
 cat dos-metrics-env.sh >> env-artifact.sh
 exit 0

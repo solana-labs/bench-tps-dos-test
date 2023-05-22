@@ -92,11 +92,11 @@ mkdir -p "$HOME/$HOSTNAME"
 
 echo ---- stage: download id, accounts and authority file in HOME ----
 cd $HOME
-download_file "gs://$BENCH_TPS_PRIVATE_BUCKET" "$ID_FILE" "$HOME"
+download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" "$ID_FILE" "$HOME"
 [[ ! -f "$ID_FILE" ]]&&echo no "$ID_FILE" file && exit 1
-download_file "gs://$BENCH_TPS_PRIVATE_BUCKET" "$KEYPAIR_FILE" "$HOME"
+download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" "$KEYPAIR_FILE" "$HOME"
 [[ ! -f "$KEYPAIR_FILE" ]]&&echo no "$KEYPAIR_FILE" file && exit 1
-download_file "gs://$BENCH_TPS_PRIVATE_BUCKET" "$DOS_FOUNDER_FILE" "$HOME"
+download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" "$DOS_FOUNDER_FILE" "$HOME"
 [[ ! -f "$DOS_FOUNDER_FILE" ]]&&echo no "$DOS_FOUNDER_FILE" file && exit 1
 
 exit 0

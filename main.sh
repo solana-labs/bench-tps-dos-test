@@ -6,7 +6,7 @@ source utils.sh
 
 artifact_bucket="$ARTIFACT_BUCKET/$BUILDKITE_PIPELINE_ID/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 artifact_file="$ENV_ARTIFACT_FILE"
-download "$artifact_bucket" "$artifact_file" "$dos_program_dir"
+download_file "$artifact_bucket" "$artifact_file" "$dos_program_dir"
 if [[ -f "$artifact_file" ]];then
     # shellcheck source=/dev/null
     source "$artifact_file" 

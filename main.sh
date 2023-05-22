@@ -3,10 +3,6 @@ set -ex
 ## Directory settings
 dos_program_dir=$(pwd)
 source utils.sh
-echo ----- stage: show envs upload as an artifcat ---- 
-# shellcheck source=/dev/null
-source env-artifact.sh
-
 
 echo ----- stage: machines and build and upload mango-simulation ---
 cd "$dos_program_dir"
@@ -15,6 +11,7 @@ source create-instance.sh
 create_machines "$NUM_CLIENT"
 echo ----- stage: build dependency mango_bencher configure_mango for machine------
 client_num=1
+# ARTIFACT_BUCKET must in the step
 arg2="$ARTIFACT_BUCKET/$BUILDKITE_PIPELINE_ID/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 arg3="$ENV_ARTIFACT_FILE"
 for sship in "${instance_ip[@]}"

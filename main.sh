@@ -4,7 +4,7 @@ set -ex
 dos_program_dir=$(pwd)
 source utils.sh
 echo ----- stage: show envs upload as an artifcat ---- 
-download_file "$ARTIFACT_BUCKET/$BUILDKITE_PIPELINE_ID/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID" ./
+download_file "gs://$ARTIFACT_BUCKET/$BUILDKITE_PIPELINE_ID/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID" ./
 if [[ -f "env-artifact.sh" ]];then
     sleep 1
 # shellcheck source=/dev/null

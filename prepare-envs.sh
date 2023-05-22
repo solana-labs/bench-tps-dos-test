@@ -46,18 +46,18 @@ chmod 600 id_ed25519_dos_test
 
 echo ----- stage: prepare env-artifact for clients ------
 ## Mango-simulation Envs
-echo "ENDPOINT=$ENDPOINT" > env-artifact.sh
-echo "NUM_CLIENT=$NUM_CLIENT" > env-artifact.sh
-echo "TEST_TYPE=$TEST_TYPE" > env-artifact.sh
-echo "TPU_USE_QUIC=$TPU_USE_QUIC" > env-artifact.sh
-echo "TPU_DISABLE_QUIC=$TPU_DISABLE_QUIC" > env-artifact.sh
+echo "ENDPOINT=$ENDPOINT" >> env-artifact.sh
+echo "NUM_CLIENT=$NUM_CLIENT" >> env-artifact.sh
+echo "TEST_TYPE=$TEST_TYPE" >> env-artifact.sh
+echo "TPU_USE_QUIC=$TPU_USE_QUIC" >> env-artifact.sh
+echo "TPU_DISABLE_QUIC=$TPU_DISABLE_QUIC" >> env-artifact.sh
 
-echo "GIT_TOKEN=$GIT_TOKEN" > env-artifact.sh
-echo "SOLANA_REPO=$SOLANA_REPO" > env-artifact.sh
-echo "SOLANA_BUILD_BRANCH=$SOLANA_BUILD_BRANCH" > env-artifact.sh
-echo "KEEP_INSTANCES=$KEEP_INSTANCES" > env-artifact.sh
-echo "RUN_BENCH_AT_TS_UTC=$RUN_BENCH_AT_TS_UTC" > env-artifact.sh
-echo "SLACK_WEBHOOK=$SLACK_WEBHOOK" > env-artifact.sh
+echo "GIT_TOKEN=$GIT_TOKEN" >> env-artifact.sh
+echo "SOLANA_REPO=$SOLANA_REPO" >> env-artifact.sh
+echo "SOLANA_BUILD_BRANCH=$SOLANA_BUILD_BRANCH" >> env-artifact.sh
+echo "KEEP_INSTANCES=$KEEP_INSTANCES" >> env-artifact.sh
+echo "RUN_BENCH_AT_TS_UTC=$RUN_BENCH_AT_TS_UTC" >> env-artifact.sh
+echo "SLACK_WEBHOOK=$SLACK_WEBHOOK" >> env-artifact.sh
 
 # buildkite build envs
 echo "BUILDKITE_BRANCH=$BUILDKITE_BRANCH" >> env-artifact.sh

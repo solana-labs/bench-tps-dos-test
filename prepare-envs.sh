@@ -21,7 +21,7 @@ echo ----- stage: checkout buildkite Steps Env ------
 [[ ! "$DOS_FOUNDER_FILE" ]]&&DOS_FOUNDER_FILE="testnet-dos-funder.json"
 [[ ! "$KEYPAIR_FILE" ]]&&KEYPAIR_FILE="large-keypairs.yaml"
 [[ ! "$ID_FILE" ]]&&ID_FILE="id_ed25519_dos_test"
-[[ ! "$BENCH_TPS_ARTIFACT_FILE" ]]&& BENCH_TPS_ARTIFACT_FILE=solan-bench-tps
+[[ ! "$BENCH_TPS_ARTIFACT_FILE" ]]&& BENCH_TPS_ARTIFACT_FILE="solana-bench-tps"
 if [[ ! "$ARTIFACT_BUCKET" ]];then 
     ARTIFACT_BUCKET=buildkite-dos-agent 
     export ARTIFACT_BUCKET="$ARTIFACT_BUCKET"

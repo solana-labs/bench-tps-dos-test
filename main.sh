@@ -3,17 +3,18 @@ set -ex
 ## Directory settings
 dos_program_dir=$(pwd)
 source utils.sh
-
+# shellcheck source=/dev/null
+source "$artifact_file" 
 artifact_bucket="$ARTIFACT_BUCKET/$BUILDKITE_PIPELINE_ID/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID"
 artifact_file="$ENV_ARTIFACT_FILE"
-download_file "$artifact_bucket" "$artifact_file" "$dos_program_dir"
-if [[ -f "$artifact_file" ]];then
-    # shellcheck source=/dev/null
-    source "$artifact_file" 
-else
-    echo "No $artifact_file found"
-    exit 1
-fi
+# download_file "$artifact_bucket" "$artifact_file" "$dos_program_dir"
+# if [[ -f "$artifact_file" ]];then
+#     # shellcheck source=/dev/null
+#     source "$artifact_file" 
+# else
+#     echo "No $artifact_file found"
+#     exit 1
+# fi
 
 echo ----- stage: machines and build and upload mango-simulation ---
 cd "$dos_program_dir"

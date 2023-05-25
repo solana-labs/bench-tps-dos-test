@@ -16,7 +16,6 @@ echo ----- stage: checkout buildkite Steps Env ------
 
 # CI ENVs
 [[ ! "$GIT_TOKEN" ]]&& echo GIT_TOKEN env not found && exit 1
-[[ ! "$GIT_REPO" ]]&& GIT_REPO="https://github.com/solana-labs/bench-tps-dos-test.git"
 [[ ! "$GIT_REPO_DIR" ]]&& GIT_REPO_DIR="bench-tps-dos-test"
 [[ ! "$DOS_FOUNDER_FILE" ]]&&DOS_FOUNDER_FILE="testnet-dos-funder.json"
 [[ ! "$KEYPAIR_FILE" ]]&&KEYPAIR_FILE="large-keypairs.yaml"
@@ -55,6 +54,7 @@ echo "TPU_USE_QUIC=$TPU_USE_QUIC" >> env-artifact.sh
 echo "TPU_DISABLE_QUIC=$TPU_DISABLE_QUIC" >> env-artifact.sh
 
 echo "GIT_TOKEN=$GIT_TOKEN" >> env-artifact.sh
+echo "GIT_REPO_DIR$GIT_REPO_DIR" >> env-artifact.sh
 echo "SOLANA_REPO=$SOLANA_REPO" >> env-artifact.sh
 echo "SOLANA_BUILD_BRANCH=$SOLANA_BUILD_BRANCH" >> env-artifact.sh
 echo "KEEP_INSTANCES=$KEEP_INSTANCES" >> env-artifact.sh

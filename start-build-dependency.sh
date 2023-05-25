@@ -55,7 +55,7 @@ rustup update
 echo ------- stage: git clone bench-tps-dos ------
 cd $HOME
 [[ -d "$GIT_REPO_DIR" ]]&& rm -rf $GIT_REPO_DIR
-git clone "$GIT_REPO"
+git clone "$BUILDKITE_REPO"
 cd "$GIT_REPO_DIR"
 git checkout "$BUILDKITE_BRANCH"
 

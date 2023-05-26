@@ -63,6 +63,7 @@ echo "SLACK_WEBHOOK=$SLACK_WEBHOOK" >> env-artifact.sh
 
 # buildkite build envs
 echo "BUILDKITE_BRANCH=$BUILDKITE_BRANCH" >> env-artifact.sh
+echo "BUILDKITE_REPO=$BUILDKITE_REPO" >> env-artifact.sh
 echo "BUILDKITE_PIPELINE_ID=$BUILDKITE_PIPELINE_ID" >> env-artifact.sh
 echo "BUILDKITE_BUILD_ID=$BUILDKITE_BUILD_ID" >> env-artifact.sh
 echo "BUILDKITE_JOB_ID=$BUILDKITE_JOB_ID" >> env-artifact.sh

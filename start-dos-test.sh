@@ -14,7 +14,7 @@ source $HOME/env-artifact.sh
 echo --- stage:setup bench-tps parameters ---
 args=(
   -u "$ENDPOINT"
-  --identity "$HOME/$ID_DIR/$ID_FILE"
+  --identity "$HOME/$ID_FILE"
   --read-client-keys "$HOME/$KEYPAIR_DIR/$KEYPAIR_FILE"
   --duration "$TX_COUNT"
   --tx_count "$DURATION" 

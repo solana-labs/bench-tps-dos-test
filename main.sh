@@ -32,7 +32,6 @@ do
     ret_run_dos=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@$sship "nohup /home/sol/start-dos-test.sh  1> start-dos-test.nohup 2> start-dos-test.nohup &")
     (( client_num++ )) || true 
 done
-
 # # Get Time Start
 start_time=$(date -u +%s)
 start_time_adjust=$(get_time_after $start_time 5)
@@ -45,15 +44,16 @@ for sship in "${instance_ip[@]}"
 do
     ret_pid=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@$sship 'pgrep --full "bash /home/sol/start-dos-test.sh*"' > pid.txt) || true
     pid=$(cat pid.txt)
-    [[ $pid == "" ]] && echo "$sship has finished run mango-simulation" || echo "pid=$pid"
+    [[ $pid == "" ]] && echo "$sship has finished run bench-tps" || echo "pid=$pid"
     while [ "$pid" != "" ]
     do
         sleep $TERMINATION_CHECK_INTERVAL
         ret_pid=$(ssh -i id_ed25519_dos_test -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" sol@$sship 'pgrep --full "bash /home/sol/start-dos-test.sh*"' > pid.txt) || true
         pid=$(cat pid.txt)
-        [[ $pid == "" ]] && echo "$sship has finished run mango-simulation" || echo "pid=$pid"
+        [[ $pid == "" ]] && echo "$sship has finished run bench-tps" || echo "pid=$pid"
     done
 done
+
 estimate_stop_time=$(get_time_after $star_time $DURATION)
 
 ### Get Time Stop
@@ -81,6 +81,7 @@ do
 done
 echo "INSTANCES=\"$instances\"" >> dos-report-env.sh
 ret_dos_report=$(exec ./dos-report.sh)
+
 echo ----- stage: upload logs ------
 cnt=1
 for sship in "${instance_ip[@]}"

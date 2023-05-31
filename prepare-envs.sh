@@ -8,16 +8,23 @@ echo ----- stage: checkout buildkite Steps Env ------
 ## 3.DOS_BENCH_TPS_LOG_BUCKET : log bucket
 
 # Check ENVs
-[[ ! "$TEST_TYPE" ]]&& echo TEST_TYPE env not found && exit 1
 [[ ! "$ENDPOINT" ]]&& echo ENDPOINT env not found && exit 1
-[[ ! "$TPU_USE_QUIC" ]]&& TPU_USE_QUIC="false" && echo TPU_USE_QUIC env not found, use $TPU_USE_QUIC
-[[ ! "$TPU_DISABLE_QUIC" ]]&& TPU_DISABLE_QUIC=0 && echo TPU_DISABLE_QUIC env not found, use $TPU_DISABLE_QUIC
+[[ ! "$TX_COUNT" ]] && echo TX_COUNT env not found && exit 1
+[[ ! "$DURATION" ]] && echo DURATION env not found && exit 1
 [[ ! "$USE_TPU_CLIENT" ]] && USE_TPU_CLIENT="true"
-
+[[ ! "$TPU_USE_QUIC" ]]&& TPU_USE_QUIC="false" && echo TPU_USE_QUIC env not found, use $TPU_USE_QUIC
+[[ ! "$THREAD_BATCH_SLEEP_MS" ]]&& THREAD_BATCH_SLEEP_MS=10 && echo THREAD_BATCH_SLEEP_MS env not found, use $TPU_DISABLE_QUIC
+[[ ! "$SUSTAINED" ]] && SUSTAINED="false"
+[[ ! "$USE_DURABLE_NONCE" ]] && USE_DURABLE_NONCE="false"
 # CI ENVs
+[[ ! "$TEST_TYPE" ]] && TEST_TYPE="QUIC"
 [[ ! "$GIT_TOKEN" ]]&& echo GIT_TOKEN env not found && exit 1
+[[ ! "$NUM_CLIENT" ]]&& echo NUM_CLIENT env not found && exit 1
+[[ ! "$TERMINATION_CHECK_INTERVAL" ]]&& TERMINATION_CHECK_INTERVAL=10 && echo TERMINATION_CHECK_INTERVAL env not found, use $TERMINATION_CHECK_INTERVAL
 [[ ! "$GIT_REPO_DIR" ]]&& GIT_REPO_DIR="bench-tps-dos-test"
-[[ ! "$DOS_FOUNDER_FILE" ]]&&DOS_FOUNDER_FILE="testnet-dos-funder.json"
+[[ ! "$SOLANA_BUILD_BRANCH" ]]&& SOLANA_BUILD_BRANCH=master
+[[ ! "$AVAILABLE_ZONE" ]]&& AVAILABLE_ZONE="us-central1-a us-west1-b asia-east1-b europe-west4-a" && echo  no AVAILABLE_ZONE and use $AVAILABLE_ZONE
+[[ ! "$KEYPAIR_DIR" ]]&&KEYPAIR_DIR="keypair-configs"
 [[ ! "$KEYPAIR_FILE" ]]&&KEYPAIR_FILE="large-keypairs.yaml"
 [[ ! "$KEYPAIR_TAR_FILE" ]] && KEYPAIR_TAR_FILE=keypair-configs.tgz 
 [[ ! "$ID_FILE" ]]&&ID_FILE="id_ed25519_dos_test"
@@ -25,8 +32,6 @@ echo ----- stage: checkout buildkite Steps Env ------
 [[ ! "$DOS_BENCH_TPS_PRIVATE_BUCKET" ]]&& DOS_BENCH_TPS_PRIVATE_BUCKET=bench-tps-dos-private
 [[ ! "$DOS_BENCH_TPS_LOG_BUCKET" ]]&& DOS_BENCH_TPS_LOG_BUCKET="bench-tps-dos-log"
 [[ ! "$SOLANA_REPO" ]]&& SOLANA_REPO=https://github.com/solana-labs/solana.git
-[[ ! "$SOLANA_BUILD_BRANCH" ]]&& SOLANA_BUILD_BRANCH=master
-[[ ! "$NUM_CLIENT" ]]&& echo NUM_CLIENT env not found && exit 1
 [[ ! "$KEEP_INSTANCES" ]]&& KEEP_INSTANCES="false" && echo KEEP_INSTANCES env not found, use $KEEP_INSTANCES
 [[ ! "$RUN_BENCH_AT_TS_UTC" ]]&& RUN_BENCH_AT_TS_UTC=0 && echo RUN_BENCH_AT_TS_UTC env not found, use $RUN_BENCH_AT_TS_UTC
 [[ ! "$SLACK_WEBHOOK" ]]&&[[ ! "$DISCORD_WEBHOOK" ]]&& echo no WEBHOOK found&&exit 1
@@ -47,12 +52,18 @@ download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" id_ed25519_dos_test ./
 chmod 600 id_ed25519_dos_test
 
 echo ----- stage: prepare env-artifact for clients ------
-## Mango-simulation Envs
+## bench-tps Envs
 echo "ENDPOINT=$ENDPOINT" >> env-artifact.sh
-echo "NUM_CLIENT=$NUM_CLIENT" >> env-artifact.sh
-echo "TEST_TYPE=$TEST_TYPE" >> env-artifact.sh
 echo "TPU_USE_QUIC=$TPU_USE_QUIC" >> env-artifact.sh
+echo "TX_COUNT=$TX_COUNT" >> env-artifact.sh
+echo "DURATION=$DURATION" >> env-artifact.sh
+echo "USE_TPU_CLIENT=$USE_TPU_CLIENT" >> env-artifact.sh
+echo "THREAD_BATCH_SLEEP_MS=$THREAD_BATCH_SLEEP_MS" >> env-artifact.sh
+echo "USE_DURABLE_NONCE=$USE_DURABLE_NONCE" >> env-artifact.sh
+echo "SUSTAINED=$SUSTAINED" >> env-artifact.sh
 echo "TPU_DISABLE_QUIC=$TPU_DISABLE_QUIC" >> env-artifact.sh
+## CI Envs
+echo "NUM_CLIENT=$NUM_CLIENT" >> env-artifact.sh
 echo "GIT_TOKEN=$GIT_TOKEN" >> env-artifact.sh
 echo "GIT_REPO_DIR=$GIT_REPO_DIR" >> env-artifact.sh
 echo "SOLANA_REPO=$SOLANA_REPO" >> env-artifact.sh
@@ -61,6 +72,7 @@ echo "KEEP_INSTANCES=$KEEP_INSTANCES" >> env-artifact.sh
 echo "RUN_BENCH_AT_TS_UTC=$RUN_BENCH_AT_TS_UTC" >> env-artifact.sh
 echo "SLACK_WEBHOOK=$SLACK_WEBHOOK" >> env-artifact.sh
 ##  downloaded files
+echo "KEYPAIR_DIR=$KEYPAIR_DIR" >> env-artifact.sh
 echo "KEYPAIR_FILE=$KEYPAIR_FILE" >> env-artifact.sh
 echo "KEYPAIR_TAR_FILE=$KEYPAIR_TAR_FILE" >> env-artifact.sh
 echo "ID_FILE=$ID_FILE" >> env-artifact.sh

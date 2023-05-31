@@ -66,20 +66,19 @@ testnet_version=$(get_testnet_ver $ENDPOINT)
 [[ $DISCORD_WEBHOOK ]]&&echo "DISCORD_WEBHOOK=$DISCORD_WEBHOOK" >> dos-report-env.sh
 [[ $DISCORD_AVATAR_URL ]]&&echo "DISCORD_AVATAR_URL=$DISCORD_AVATAR_URL" >> dos-report-env.sh
 
-echo "START_TIME=${start_time}" >> dos-report-env.sh
-echo "START_TIME2=${start_time_adjust}" >> dos-report-env.sh
-echo "STOP_TIME=${stop_time}" >> dos-report-env.sh
-echo "STOP_TIME2=${stop_time_adjust}" >> dos-report-env.sh
-echo "DURATION=$DURATION" >> dos-report-env.sh                 
-echo "QOUTES_PER_SECOND=$QOUTES_PER_SECOND" >> dos-report-env.sh
-echo "NUM_CLIENT=$NUM_CLIENT" >> dos-report-env.sh
-echo "CLUSTER_VERSION=$testnet_version" >> dos-report-env.sh
-echo "BUILDKITE_BUILD_URL=$BUILDKITE_BUILD_URL" >> dos-report-env.sh
+echo "START_TIME=${start_time}" >> env-artifact.sh
+echo "START_TIME2=${start_time_adjust}" >> env-artifact.sh
+echo "STOP_TIME=${stop_time}" >> env-artifact.sh
+echo "STOP_TIME2=${stop_time_adjust}" >> env-artifact.sh
+echo "CLUSTER_VERSION=$testnet_version" >> env-artifact.sh
+echo "BUILDKITE_BUILD_URL=$BUILDKITE_BUILD_URL" >> env-artifact.sh
 for n in "${instance_name[@]}"
 do
     printf -v instances "%s %s " $instances $n
 done
-echo "INSTANCES=\"$instances\"" >> dos-report-env.sh
+echo "INSTANCES=\"$instances\"" >>env-artifact.sh
+CLUSTER_VERSION=get_testnet_ver $ENDPOINT
+echo "CLUSTER_VERSION=$CLUSTER_VERSION" >> env-artifact.sh
 ret_dos_report=$(exec ./dos-report.sh)
 
 echo ----- stage: upload logs ------

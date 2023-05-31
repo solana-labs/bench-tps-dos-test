@@ -2,7 +2,7 @@
 ## solana-bench-tps config
 set -ex
 # read env
-source dos-report-env.sh
+source "env-artifact.sh" 
 # check ENV
 # no env , exit
 [[ ! $SLACK_WEBHOOK ]]&&[[ ! $DISCORD_WEBHOOK ]]&& echo no WEBHOOK found&&exit 1
@@ -19,7 +19,7 @@ source dos-report-env.sh
 [[ ! $TX_COUNT ]]&&	echo TX_COUNT env not found, use $TX_COUNT&&exit 1
 [[ ! $TEST_TYPE ]]&&	echo TEST_TYPE env not found, use $TEST_TYPE&&exit 1
 [[ ! $NUM_CLIENT ]]&&	echo NUM_CLIENT env not found, use $NUM_CLIENT&&exit 1
-[[ ! $GIT_COMMIT ]]&&	echo GIT_COMMIT env not found, use $GIT_COMMIT&&exit 1
+[[ ! $GIT_COMMIT ]]&&	echo GIT_COMMIT env not found. $GIT_COMMIT="NA"
 [[ ! $CLUSTER_VERSION ]]&&	echo CLUSTER_VERSION env not found, use $CLUSTER_VERSION&&exit 1
 [[ ! $SOLANA_BUILD_BRANCH ]]&&	echo SOLANA_BUILD_BRANCH env not found, use $SOLANA_BUILD_BRANCH&&exit 1
 # No env use default

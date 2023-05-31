@@ -77,7 +77,7 @@ do
     printf -v instances "%s %s " $instances $n
 done
 echo "INSTANCES=\"$instances\"" >>env-artifact.sh
-CLUSTER_VERSION=get_testnet_ver $ENDPOINT
+CLUSTER_VERSION=$(get_testnet_ver $ENDPOINT)
 echo "CLUSTER_VERSION=$CLUSTER_VERSION" >> env-artifact.sh
 ret_dos_report=$(exec ./dos-report.sh)
 

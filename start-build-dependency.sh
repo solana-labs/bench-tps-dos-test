@@ -30,6 +30,7 @@ download_file() {
 }
 
 ## Download key files from gsutil
+echo "arg1"="$1"
 [[ "$1" != "true" && "$1" != "false" ]] && build_binary="false" || build_binary="$1"
 [[ ! "$2" ]]&& echo "No artifact bucket" && exit 1
 [[ ! "$3" ]]&& echo "No artifact filename" && exit 1
@@ -58,13 +59,15 @@ cd $HOME
 git clone "$BUILDKITE_REPO"
 cd "$GIT_REPO_DIR"
 git checkout "$BUILDKITE_BRANCH"
-
-echo ------- stage: download solana repos and build solana-bench-tps ------
+git branch
+# echo ------- stage: download solana repos and build solana-bench-tps ------
 cd "$HOME"
+
 if  [[ "$build_binary" == "true" ]];then 
-    [[ -d "$HOME/$SOLANA_REPO" ]]&& rm -rf "$HOME/$SOLANA_REPO"
+    [[ -d "$HOME/solana" ]]&& rm -rf "$HOME/solana"
     git clone "$SOLANA_REPO"
-    [[ -d "$HOME/solana" ]] || echo "solana repo is not downloaded" && exit 1
+
+    [[ -d "$HOME/solana" ]] || exit 1
     cd "$HOME/solana"
     if [[ "$GIT_COMMIT" ]];then
         git checkout "$GIT_COMMIT"
@@ -72,31 +75,35 @@ if  [[ "$build_binary" == "true" ]];then
         git checkout "$SOLANA_BUILD_BRANCH"
     fi
     cd "$HOME/solana/bench-tps"
-    [[ -f "$HOME/solana/target/relase/solana-bench-tps" ]]&& rm "$HOME/solana/target/relase/solana-bench-tps"
+    [[ -f "$HOME/solana/target/release/solana-bench-tps" ]]&& rm "$HOME/solana/target/release/solana-bench-tps"
     res=$(cargo build --release > bench-tps-build.output)
     echo "$res"
-    [[ -f "$HOME/solana/target/relase/solana-bench-tps" ]] || echo "build solana-bench-tps fail" && cat bench-tps-build.output && exit 1
-    cp "$HOME/solana/target/relase/solana-bench-tps"  "$HOME"
+    if [[ -f "$HOME/solana/target/release/solana-bench-tps" ]];then
+        cp "$HOME/solana/target/release/solana-bench-tps"  "$HOME"
+    else
+        echo "build solana-bench-tps fail"
+        exit 1
+    fi   
 else
-    # download from bucket
+    download from bucket
     download_file "gs://$ARTIFACT_BUCKET/$BUILDKITE_PIPELINE_ID/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID" "$BENCH_TPS_ARTIFACT_FILE" "$HOME"
-	[[ ! -f "$HOME/solana-bench-tps" ]] && echo no solana-bench-tps && exit 1
-	chmod +x "$HOME/solana-bench-tps"
-fi
+    [[ ! -f "$HOME/solana-bench-tps" ]] && echo no solana-bench-tps && exit 1
+    chmod +x "$HOME/solana-bench-tps"
+fi 
 
 echo ---- stage: copy files to HOME and mkdir log folder ----
-cp "$HOME/$GIT_REPO_DIR/start-dos-test.sh" /home/sol/start-dos-test.sh
-cp "$HOME/$GIT_REPO_DIR/start-upload-logs.sh" /home/sol/start-upload-logs.sh
+cp "$HOME/$GIT_REPO_DIR/start-dos-test.sh" $HOME/start-dos-test.sh
+cp "$HOME/$GIT_REPO_DIR/start-upload-logs.sh" $HOME/start-upload-logs.sh
 [[ -d "$HOME/$HOSTNAME" ]] && rm -rf "$HOME/$HOSTNAME"
 mkdir -p "$HOME/$HOSTNAME"
 
 echo ---- stage: download id, accounts and authority file in HOME ----
-cd $HOME
+cd "$HOME"
 download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" "$ID_FILE" "$HOME"
 [[ ! -f "$ID_FILE" ]]&&echo no "$ID_FILE" file && exit 1
-download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" "$KEYPAIR_FILE" "$HOME"
-[[ ! -f "$KEYPAIR_FILE" ]]&&echo no "$KEYPAIR_FILE" file && exit 1
-download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" "$DOS_FOUNDER_FILE" "$HOME"
-[[ ! -f "$DOS_FOUNDER_FILE" ]]&&echo no "$DOS_FOUNDER_FILE" file && exit 1
+download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" "$KEYPAIR_TAR_FILE" "$HOME"
+[[ ! -f "$KEYPAIR_TAR_FILE" ]]&&echo no "$KEYPAIR_TAR_FILE" file && exit 1
+tar -xzvf $KEYPAIR_TAR_FILE
+[[ ! -f "$HOME/keypair-configs/$KEYPAIR_FILE" ]]&&echo no "$KEYPAIR_FILE" file && exit 1
 
 exit 0

@@ -60,10 +60,11 @@ git clone "$BUILDKITE_REPO"
 cd "$GIT_REPO_DIR"
 git checkout "$BUILDKITE_BRANCH"
 git branch
-# echo ------- stage: download solana repos and build solana-bench-tps ------
+echo ------- stage: download solana repos and build solana-bench-tps ------
 cd "$HOME"
 
 if  [[ "$build_binary" == "true" ]];then 
+    echo ------- build solana-bench-tps ------
     [[ -d "$HOME/solana" ]]&& rm -rf "$HOME/solana"
     git clone "$SOLANA_REPO"
 
@@ -85,7 +86,7 @@ if  [[ "$build_binary" == "true" ]];then
         exit 1
     fi   
 else
-    download from bucket
+    echo ------- download from bucket ------
     download_file "gs://$ARTIFACT_BUCKET/$BUILDKITE_PIPELINE_ID/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID" "$BENCH_TPS_ARTIFACT_FILE" "$HOME"
     [[ ! -f "$HOME/solana-bench-tps" ]] && echo no solana-bench-tps && exit 1
     chmod +x "$HOME/solana-bench-tps"
@@ -105,5 +106,5 @@ download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" "$KEYPAIR_TAR_FILE" "$HOME"
 [[ ! -f "$KEYPAIR_TAR_FILE" ]]&&echo no "$KEYPAIR_TAR_FILE" file && exit 1
 tar -xzvf $KEYPAIR_TAR_FILE
 [[ ! -f "$HOME/keypair-configs/$KEYPAIR_FILE" ]]&&echo no "$KEYPAIR_FILE" file && exit 1
-
+cp "$HOME/keypair-configs/$KEYPAIR_FILE" "$HOME"
 exit 0

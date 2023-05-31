@@ -8,14 +8,13 @@ source $HOME/env-artifact.sh
 
 [[ ! "$ENDPOINT" ]]&& echo "No ENDPOINT" && exit 1
 [[ ! "$SOLANA_METRICS_CONFIG" ]] && echo no SOLANA_METRICS_CONFIG ENV && exit 1
-[[ ! "$KEYPAIR_DIR" ]]&& KEYPAIR_DIR=keypair-configs && echo No KEYPAIR_DIR Env , use $KEYPAIR_DIR
 [[ ! "$KEYPAIR_FILE" ]]&& KEYPAIR_FILE=large-keypairs.yaml && echo No KEYPAIR_FILE Env , use $KEYPAIR_FILE
 #### bench-tps ENV ####
 echo --- stage:setup bench-tps parameters ---
 args=(
   -u "$ENDPOINT"
   --identity "$HOME/$ID_FILE"
-  --read-client-keys "$HOME/$KEYPAIR_DIR/$KEYPAIR_FILE"
+  --read-client-keys "$HOME/$KEYPAIR_FILE"
   --duration "$TX_COUNT"
   --tx_count "$DURATION" 
   --thread-batch-sleep-ms "$THREAD_BATCH_SLEEP_MS"

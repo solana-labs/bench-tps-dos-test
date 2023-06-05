@@ -35,10 +35,16 @@ echo ----- stage: checkout buildkite Steps Env ------
 [[ ! "$KEEP_INSTANCES" ]]&& KEEP_INSTANCES="false" && echo KEEP_INSTANCES env not found, use $KEEP_INSTANCES
 [[ ! "$RUN_BENCH_AT_TS_UTC" ]]&& RUN_BENCH_AT_TS_UTC=0 && echo RUN_BENCH_AT_TS_UTC env not found, use $RUN_BENCH_AT_TS_UTC
 [[ ! "$SLACK_WEBHOOK" ]]&&[[ ! "$DISCORD_WEBHOOK" ]]&& echo no WEBHOOK found&&exit 1
+# set large data set
+[[ ! $LARGE_DATA_SET ]] && LARGE_DATA_SET="false"
+# INFLUX_WINDOW_INTERVAL & INFLUX_WINDOW_INTERVAL_LONG is used only when LARGE_DATA_SET is true
+[[ ! $INFLUX_WINDOW_INTERVAL ]] && INFLUX_WINDOW_INTERVAL="10m"
+[[ ! $INFLUX_WINDOW_INTERVAL_LONG ]] && INFLUX_WINDOW_INTERVAL_LONG="30m"
 ARTIFACT_BUCKET=buildkite-dos-agent 
 export ARTIFACT_BUCKET="$ARTIFACT_BUCKET"
 ENV_ARTIFACT_FILE=env-artifact.sh
 export ENV_ARTIFACT_FILE="$ENV_ARTIFACT_FILE"
+
 
 source utils.sh
 echo ----- stage: prepare metrics env ------ 
@@ -90,4 +96,8 @@ echo "DOS_BENCH_TPS_LOG_BUCKET=$DOS_BENCH_TPS_LOG_BUCKET" >> env-artifact.sh
 echo "ARTIFACT_BUCKET=$ARTIFACT_BUCKET" >> env-artifact.sh
 echo "ENV_ARTIFACT_FILE=$ENV_ARTIFACT_FILE" >> env-artifact.sh
 echo "BENCH_TPS_ARTIFACT_FILE=solana-bench-tps" >> env-artifact.sh
+## large data set
+echo "LARGE_DATA_SET=$LARGE_DATA_SET" >> env-artifact.sh
+echo "INFLUX_WINDOW_INTERVAL=$INFLUX_WINDOW_INTERVAL" >> env-artifact.sh
+echo "INFLUX_WINDOW_INTERVAL_LONG=$INFLUX_WINDOW_INTERVAL_LONG" >> env-artifact.sh
 cat dos-metrics-env.sh >> env-artifact.sh

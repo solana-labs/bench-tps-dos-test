@@ -5,36 +5,34 @@ set -ex
 source "env-artifact.sh" 
 # check ENV
 # no env , exit
-[[ ! $SLACK_WEBHOOK ]]&&[[ ! $DISCORD_WEBHOOK ]]&& echo no WEBHOOK found&&exit 1
 [[ ! $START_TIME ]]&& echo START_TIME env not found&&exit 1
 [[ ! $START_TIME2 ]]&& echo START_TIME2 env not found&&exit 1
 [[ ! $STOP_TIME ]]&& echo STOP_TIME env not found&&exit 1
 [[ ! $STOP_TIME2 ]]&& echo STOP_TIME2 env not found&&exit 1
 [[ ! $INFLUX_TOKEN ]]&& echo INFLUX_TOKEN env not found&&exit 1
-[[ ! $INFLUX_ORG_NAME ]]&& echo INFLUX_ORG_NAME env not found&&exit 1
-
-[[ ! $KEYPAIR_FILE ]]&& KEYPAIR_FILE="NA"&& echo KEYPAIR_FILE env not found, use $KEYPAIR_FILE
 [[ ! $INFLUX_HOST ]]&& echo INFLUX_HOST env not found, use $INFLUX_HOST&&exit 1
-[[ ! $DURATION ]]&&	echo DURATION env not found, use $DURATION&&exit 1
-[[ ! $TX_COUNT ]]&&	echo TX_COUNT env not found, use $TX_COUNT&&exit 1
-[[ ! $TEST_TYPE ]]&&	echo TEST_TYPE env not found, use $TEST_TYPE&&exit 1
-[[ ! $NUM_CLIENT ]]&&	echo NUM_CLIENT env not found, use $NUM_CLIENT&&exit 1
-[[ ! $GIT_COMMIT ]]&&	echo GIT_COMMIT env not found. $GIT_COMMIT="NA"
-[[ ! $CLUSTER_VERSION ]]&&	echo CLUSTER_VERSION env not found, use $CLUSTER_VERSION&&exit 1
-[[ ! $SOLANA_BUILD_BRANCH ]]&&	echo SOLANA_BUILD_BRANCH env not found, use $SOLANA_BUILD_BRANCH&&exit 1
-# No env use default
-[[ ! $THREAD_BATCH_SLEEP_MS ]]&& THREAD_BATCH_SLEEP_MS=1&&echo THREAD_BATCH_SLEEP_MS env not found, use $THREAD_BATCH_SLEEP_MS
-[[ ! $USE_DURABLE_NONCE ]]&& USE_DURABLE_NONCE=false&& echo USE_DURABLE_NONCE env not found, use $USE_DURABLE_NONCE
+# set large data set
+[[ ! $LARGE_DATA_SET ]] && LARGE_DATA_SET="false"
 if [[ -n $BUILDKITE_BUILD_URL ]] ; then
 	BUILD_BUTTON_TEXT="Build Kite Job"
 else
 	BUILD_BUTTON_TEXT="Build URL not defined"
     BUILDKITE_BUILD_URL="https://buildkite.com/solana-labs/"
 fi
-[[ ! $DISCORD_AVATAR_URL ]]&&DISCORD_AVATAR_URL="https://i.imgur.com/CS0oRfD.jpg" || echo use DISCORD_AVATAR_URL=$DISCORD_AVATAR_URL
+## setup window interval for query
+window_interval="10s" 
+window_interval_long="10s"
+if [[ "$LARGE_DATA_SET" == "true" ]];then
+	[[ ! "$INFLUX_WINDOW_INTERVAL" ]] && INFLUX_WINDOW_INTERVAL="10m"
+	[[ ! "$INFLUX_WINDOW_INTERVAL_LONG" ]] && INFLUX_WINDOW_INTERVAL_LONG="30m"
+	window_interval=$INFLUX_WINDOW_INTERVAL
+	window_interval_long=$INFLUX_WINDOW_INTERVAL_LONG
+fi
+
 ## Configuration
 test_type=$TEST_TYPE
 client="tpu"
+[[ "$USE_TPU_CLIENT" == "false" ]] && client="rpc" 
 git_commit=$GIT_COMMIT
 cluster_version=$CLUSTER_VERSION
 num_clients=$NUM_CLIENT

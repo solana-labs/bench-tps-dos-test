@@ -27,7 +27,7 @@ echo ----- stage: checkout buildkite Steps Env ------
 [[ ! "$KEYPAIR_DIR" ]]&&KEYPAIR_DIR="keypair-configs"
 [[ ! "$KEYPAIR_FILE" ]]&&KEYPAIR_FILE="large-keypairs.yaml"
 [[ ! "$KEYPAIR_TAR_FILE" ]] && KEYPAIR_TAR_FILE=keypair-configs.tgz 
-[[ ! "$ID_FILE" ]]&&ID_FILE="id_ed25519_dos_test"
+[[ ! "$ID_FILE" ]]&&ID_FILE="testnet-dos-funder.json"
 [[ ! "$BENCH_TPS_ARTIFACT_FILE" ]]&& BENCH_TPS_ARTIFACT_FILE="solana-bench-tps"
 [[ ! "$DOS_BENCH_TPS_PRIVATE_BUCKET" ]]&& DOS_BENCH_TPS_PRIVATE_BUCKET=bench-tps-dos-private
 [[ ! "$DOS_BENCH_TPS_LOG_BUCKET" ]]&& DOS_BENCH_TPS_LOG_BUCKET="bench-tps-dos-log"

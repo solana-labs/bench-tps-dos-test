@@ -81,6 +81,7 @@ if  [[ "$build_binary" == "true" ]];then
     echo "$res"
     if [[ -f "$HOME/solana/target/release/solana-bench-tps" ]];then
         cp "$HOME/solana/target/release/solana-bench-tps"  "$HOME"
+        upload_file "$HOME/solana-bench-tps" "gs://$ARTIFACT_BUCKET/$BUILDKITE_PIPELINE_ID/$BUILDKITE_BUILD_ID/$BUILDKITE_JOB_ID" 
     else
         echo "build solana-bench-tps fail"
         exit 1

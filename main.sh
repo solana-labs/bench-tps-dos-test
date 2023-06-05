@@ -54,7 +54,7 @@ do
     done
 done
 
-estimate_stop_time=$(get_time_after $star_time $DURATION)
+estimate_stop_time=$(get_time_after $start_time $DURATION)
 
 ### Get Time Stop
 stop_time=$(date -u +%s)

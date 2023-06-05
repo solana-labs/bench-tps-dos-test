@@ -35,9 +35,8 @@ args=(
 [[ "$USE_DURABLE_NONCE" == "true" ]] &&	args+=(--use-durable-nonce)
 # d) sustained (boolean, if true --sustained, if false nothing)
 [[ "$SUSTAINED" == "true" ]]&& args+=(--sustained)
-# benchmark exec
-# cd $HOME/solana/solana-release/bin
-cd $HOME/solana/target/release
+# benchmark execution
+cd $HOME
 echo --- start of benchmark $(date)
 benchmark=$(./solana-bench-tps "${args[@]}" &)
 sleep 2

@@ -12,69 +12,74 @@ _end_slot='from(bucket: "tds")|> range(start:'${stop_time2}' ,stop:'${stop_time}
 
 # TPS
 _mean_tx_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					|> filter(fn: (r) => r._measurement == "bank-process_transactions")
-  					|> group(columns: ["count"])
-  					|> mean()|>toInt()
-					|>drop(columns: ["_start", "_stop","count"])'
+					|> filter(fn: (r) => r._measurement == "bank-process_transactions" and r._field == "count")
+	   				|> aggregateWindow(every: '${window_interval}', fn: mean)
+					|> group()|>mean()|>toInt()
+					|> drop(columns: ["_start", "_stop","count"])'
 _max_tx_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					|> filter(fn: (r) => r._measurement == "bank-process_transactions")
-  					|> group(columns: ["count"])
-  					|> max()|>toInt()
-					|>drop(columns: ["_measurement", "_field", "_start", "_stop","_time","host_id","count"])'
+					|> filter(fn: (r) => r._measurement == "bank-process_transactions" and r._field == "count")
+	   				|> aggregateWindow(every: '${window_interval}', fn: max)
+					|> group()|>max()|>toInt()
+					|> drop(columns: ["_measurement", "_field", "_start", "_stop","_time","host_id","count"])'
 _min_tx_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					|> filter(fn: (r) => r._measurement == "bank-process_transactions")
-  					|> group(columns: ["count"])
-  					|> min()|>toInt()
-					|>drop(columns: ["_measurement", "_field", "_start", "_stop","_time","host_id","count"])'
+					|> filter(fn: (r) => r._measurement == "bank-process_transactions" and r._field == "count")
+	   				|> aggregateWindow(every: '${window_interval}', fn: min)
+					|> group()|>min()|>toInt()
+					|> drop(columns: ["_measurement", "_field", "_start", "_stop","_time","host_id","count"])'
 
 _90_tx_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					|> filter(fn: (r) => r._measurement == "bank-process_transactions")
-  					|> group(columns: ["count"])
-  					|> quantile(column: "_value", q:0.9)|>toInt()
-					|>drop(columns: ["_measurement", "_field", "_start", "_stop","count"])'
+					|> filter(fn: (r) => r._measurement == "bank-process_transactions" and r._field == "count" )
+    				|> aggregateWindow(every: '${window_interval_long}',  fn: (column, tables=<-) => tables |> quantile(q: 0.9))
+    				|> group()
+    				|> quantile(column: "_value", q:0.9)|>toInt()
+    				|> drop(columns: ["_measurement", "_field", "_start", "_stop","count"])'
 
 _99_tx_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					|> filter(fn: (r) => r._measurement == "bank-process_transactions")
-  					|> group(columns: ["count"])
-  					|> quantile(column: "_value", q:0.99)|>toInt()
-					|>drop(columns: ["_measurement", "_field", "_start", "_stop","count"])'
+					|> filter(fn: (r) => r._measurement == "bank-process_transactions" and r._field == "count" )
+    				|> aggregateWindow(every: '${window_interval_long}',  fn: (column, tables=<-) => tables |> quantile(q: 0.99))
+    				|> group()
+    				|> quantile(column: "_value", q:0.99)|>toInt()
+    				|> drop(columns: ["_measurement", "_field", "_start", "_stop","count"])'
 
 # tower distance
 _mean_tower_vote_distance='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "tower-vote")
-					 |> aggregateWindow(every: 1s,fn: mean)
-					 |> pivot(rowKey:["host_id"], columnKey: ["_field"], valueColumn: "_value")
-					 |> map(fn: (r) => ({ r with _value: r.latest - r.root}))
-					 |> group()|> mean()|>toInt()'
+					|> filter(fn: (r) => r._measurement == "tower-vote")
+					|> aggregateWindow(every: '${window_interval}',fn: last)
+					|> pivot(rowKey:["host_id"], columnKey: ["_field"], valueColumn: "_value")
+					|> map(fn: (r) => ({ r with _value: r.latest - r.root}))
+					|> group()|> mean()|>toInt()'
 _max_tower_vote_distance='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "tower-vote")
-					 |> aggregateWindow(every: 1s,fn: max)
-					 |> pivot(rowKey:["host_id"], columnKey: ["_field"], valueColumn: "_value")
-					 |> map(fn: (r) => ({ r with _value: r.latest - r.root}))
-					 |> group()|> max()|>toInt()
-					 |>drop(columns: ["_measurement", "_start", "_stop","count","host_id","latest","root"])'
+					|> filter(fn: (r) => r._measurement == "tower-vote")
+					|> aggregateWindow(every: '${window_interval}',fn: last)
+					|> pivot(rowKey:["host_id"], columnKey: ["_field"], valueColumn: "_value")
+					|> map(fn: (r) => ({ r with _value: r.latest - r.root}))
+					|> group()|> max()|>toInt()
+					|>drop(columns: ["_measurement", "_start", "_stop","count","host_id","latest","root"])'
 _min_tower_vote_distance='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "tower-vote")
-					 |> aggregateWindow(every: 1s,fn: min)
-					 |> pivot(rowKey:["host_id"], columnKey: ["_field"], valueColumn: "_value")
-					 |> map(fn: (r) => ({ r with _value: r.latest - r.root}))
-					 |> group()|> min()|>toInt()
-					 |>drop(columns: ["_measurement", "_start", "_stop","count","host_id","latest","root"])'
+					|> filter(fn: (r) => r._measurement == "tower-vote")
+					|> aggregateWindow(every: '${window_interval}',fn: last)
+					|> pivot(rowKey:["host_id"], columnKey: ["_field"], valueColumn: "_value")
+					|> map(fn: (r) => ({ r with _value: r.latest - r.root}))
+					|> group()|> min()|>toInt()
+					|>drop(columns: ["_measurement", "_start", "_stop","count","host_id","latest","root"])'
 _90_tower_vote_distance='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "tower-vote")
-					 |> pivot(rowKey:["host_id"], columnKey: ["_field"], valueColumn: "_value")
-					 |> map(fn: (r) => ({ r with _value: r.latest - r.root}))
-					 |> group()|> quantile(column: "_value", q:0.9)|>toInt()'
+					|> filter(fn: (r) => r._measurement == "tower-vote")
+					|> aggregateWindow(every: '${window_interval}',fn: last)
+					|> pivot(rowKey:["host_id"], columnKey: ["_field"], valueColumn: "_value")
+					|> map(fn: (r) => ({ r with _value: r.latest - r.root}))
+					|> group()|> quantile(column: "_value", q:0.9)|>toInt()'
 _99_tower_vote_distance='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "tower-vote")
-					 |> pivot(rowKey:["host_id"], columnKey: ["_field"], valueColumn: "_value")
-					 |> map(fn: (r) => ({ r with _value: r.latest - r.root}))
-					 |> group()|> quantile(column: "_value", q:0.99)|>toInt()'
-# optimistic_slot_elapsed
+					|> filter(fn: (r) => r._measurement == "tower-vote")
+					|> aggregateWindow(every: '${window_interval}',fn: last)
+					|> pivot(rowKey:["host_id"], columnKey: ["_field"], valueColumn: "_value")
+					|> map(fn: (r) => ({ r with _value: r.latest - r.root}))
+					|> group()|> quantile(column: "_value", q:0.99)|>toInt()'
+#optimistic_slot_elapsed
 _mean_optimistic_slot_elapsed='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "optimistic_slot_elapsed")
-					 |> group()|> mean()|>toInt()
-					 |> drop(columns: ["_start", "_stop"])'
+					|> filter(fn: (r) => r._measurement == "optimistic_slot_elapsed")
+					|> aggregateWindow(every: '${window_interval}', fn: mean)
+					|> group()|> mean()|>toInt()
+					|> drop(columns: ["_start", "_stop"])'
 
 _max_optimistic_slot_elapsed='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
 					|> filter(fn: (r) => r._measurement == "optimistic_slot_elapsed")
@@ -82,103 +87,108 @@ _max_optimistic_slot_elapsed='from(bucket: "tds")|> range(start:'${start_time}' 
 					|> drop(columns: ["_measurement","_field", "_start", "_stop","host_id","_time"])'
 
 _min_optimistic_slot_elapsed='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "optimistic_slot_elapsed")
-					 |> group()|>min()|>toInt()
-					 |> drop(columns: ["_measurement","_field", "_start", "_stop","host_id","latest","_time"])'
+					|> filter(fn: (r) => r._measurement == "optimistic_slot_elapsed")
+					|> aggregateWindow(every: '${window_interval}', fn: min)
+					|> group()|>min()|>toInt()
+					|> drop(columns: ["_measurement","_field", "_start", "_stop","host_id","latest","_time"])'
 _90_optimistic_slot_elapsed='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "optimistic_slot_elapsed")
-					 |> group()|>quantile(column: "_value", q:0.9)|>toInt()
-					 |> drop(columns: ["_start", "_stop"])'
+					|> filter(fn: (r) => r._measurement == "optimistic_slot_elapsed")
+					|> aggregateWindow(every: '${window_interval_long}',  fn: mean)
+					|> group()|>quantile(column: "_value", q:0.9)|>toInt()
+					|> drop(columns: ["_start", "_stop"])'
 _99_optimistic_slot_elapsed='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "optimistic_slot_elapsed")
-					 |> group()|>quantile(column: "_value", q:0.99)|>toInt()
-					 |> drop(columns: ["_start", "_stop"])'
+					|> filter(fn: (r) => r._measurement == "optimistic_slot_elapsed")
+					|> aggregateWindow(every: '${window_interval_long}',  fn: mean)
+					|> group()|>quantile(column: "_value", q:0.99)|>toInt()
+					|> drop(columns: ["_start", "_stop"])'
 # ct_stats_block_cost
 _mean_ct_stats_block_cost='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r["_measurement"] == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "block_cost")
-					 |> group()|> mean()|>toInt()
-					 |> drop(columns:["_start", "_stop"])'
+					|> filter(fn: (r) => r._measurement == "cost_tracker_stats" and r["_field"] == "block_cost")
+					|> aggregateWindow(every: '${window_interval}', fn: mean)
+					|> group()|> mean()|>toInt()
+					|> drop(columns:["_start", "_stop"])'
 _max_ct_stats_block_cost='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r["_measurement"] == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "block_cost")
-					 |> group()|> max()|>toInt()
-					 |> drop(columns: ["_measurement","_field", "_start", "_stop","host_id","_time"])'
+					|> filter(fn: (r) => r._measurement == "cost_tracker_stats" and r["_field"] == "block_cost")
+					|> aggregateWindow(every: '${window_interval}', fn: max)
+					|> group()|> max()|>toInt()
+					|> drop(columns: ["_measurement","_field", "_start", "_stop","host_id","_time"])'
 _min_ct_stats_block_cost='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r["_measurement"] == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "block_cost")
-					 |> group()|> min()|>toInt()
-					 |> drop(columns: ["_measurement","_field", "_start", "_stop","host_id","_time"])'
+					|> filter(fn: (r) => r._measurement == "cost_tracker_stats" and r["_field"] == "block_cost")
+					|> aggregateWindow(every: '${window_interval}', fn: min)
+					|> group()|> min()|>toInt()
+					|> drop(columns: ["_measurement","_field", "_start", "_stop","host_id","_time"])'
 _90_ct_stats_block_cost='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "block_cost")
-					 |> group()|>quantile(column: "_value", q:0.90)
-					 |> group()|> min()|>toInt()
-					 |> drop(columns: ["_start", "_stop"])'
+					|> filter(fn: (r) => r._measurement == "cost_tracker_stats" and r["_field"] == "block_cost")
+					|> aggregateWindow(every: '${window_interval}',  fn: (column, tables=<-) => tables |> quantile(q: 0.9))
+					|> group()|>quantile(column: "_value", q:0.90)
+					|> group()|> min()|>toInt()
+					|> drop(columns: ["_start", "_stop"])'
 _99_ct_stats_block_cost='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "block_cost")
-					 |> group()|>quantile(column: "_value", q:0.99)
-					 |> group()|> min()|>toInt()
-					 |> drop(columns: ["_start", "_stop"])'
+					|> filter(fn: (r) => r._measurement == "cost_tracker_stats" and r["_field"] == "block_cost")
+					|> aggregateWindow(every: '${window_interval}',  fn: (column, tables=<-) => tables |> quantile(q: 0.99))
+					|> group()|>quantile(column: "_value", q:0.99)
+					|> group()|> min()|>toInt()
+					|> drop(columns: ["_start", "_stop"])'
 # ct_stats_transaction_count
 _mean_ct_stats_transaction_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r["_measurement"] == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "transaction_count")
-					 |> group()|> mean()|>toInt()
-					 |> drop(columns: ["_start", "_stop"])'
+					|> filter(fn: (r) => r["_measurement"] == "cost_tracker_stats" and r["_field"] == "transaction_count")
+					|> aggregateWindow(every: '${window_interval}', fn: mean)
+					|> group()|> mean()|>toInt()
+					|> drop(columns: ["_start", "_stop"])'
 _max_ct_stats_transaction_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r["_measurement"] == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "transaction_count")
-					 |> group()|> max()|>toInt()
-					 |> drop(columns: ["_measurement","_field", "_start", "_stop","host_id","latest","_time"])'
+					|> filter(fn: (r) => r["_measurement"] == "cost_tracker_stats" and r["_field"] == "transaction_count")
+					|> aggregateWindow(every: '${window_interval}', fn: max)
+					|> group()|> max()|>toInt()
+					|> drop(columns: ["_measurement","_field", "_start", "_stop","host_id","latest","_time"])'
 _min_ct_stats_transaction_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r["_measurement"] == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "transaction_count")
-					 |> group()|> min()|>toInt()
-					 |> drop(columns: ["_measurement","_field", "_start", "_stop","host_id","latest","_time"])'
+					|> filter(fn: (r) => r["_measurement"] == "cost_tracker_stats" and r["_field"] == "transaction_count")
+					|> aggregateWindow(every: '${window_interval}', fn: min)
+					|> group()|> min()|>toInt()
+					|> drop(columns: ["_measurement","_field", "_start", "_stop","host_id","latest","_time"])'
 _90_ct_stats_transaction_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "transaction_count")
-					 |> group()|>quantile(column: "_value", q:0.90)|>toInt()
-					 |> drop(columns: ["_start", "_stop"])'
+					|> filter(fn: (r) => r["_measurement"] == "cost_tracker_stats" and r["_field"] == "transaction_count")
+					|> aggregateWindow(every: '${window_interval}',  fn: (column, tables=<-) => tables |> quantile(q: 0.9))
+					|> group()|>quantile(column: "_value", q:0.90)|>toInt()
+					|> drop(columns: ["_start", "_stop"])'
 _99_ct_stats_transaction_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "transaction_count")
-					 |> group()|>quantile(column: "_value", q:0.99)|>toInt()
-					 |> drop(columns: ["_start", "_stop"])'
+					|> filter(fn: (r) => r["_measurement"] == "cost_tracker_stats" and r["_field"] == "transaction_count")
+					|> aggregateWindow(every: '${window_interval}',  fn: (column, tables=<-) => tables |> quantile(q: 0.99))
+					|> filter(fn: (r) => r["_field"] == "transaction_count")
+					|> group()|>quantile(column: "_value", q:0.99)|>toInt()
+					|> drop(columns: ["_start", "_stop"])'
 # ct_stats_number_of_accounts
 _mean_ct_stats_number_of_accounts='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					|> filter(fn: (r) => r._measurement == "cost_tracker_stats")
-					|> filter(fn: (r) => r["_field"] == "number_of_accounts")
+					|> filter(fn: (r) => r._measurement == "cost_tracker_stats" and r["_field"] == "number_of_accounts")
+				 	|> aggregateWindow(every: '${window_interval}', fn: mean)
 					|> group()|> mean()|>toInt()
 					|> drop(columns: ["_start", "_stop"])'
 _max_ct_stats_number_of_accounts='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r["_measurement"] == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "number_of_accounts")
+					 |> filter(fn: (r) => r._measurement == "cost_tracker_stats" and r["_field"] == "number_of_accounts")
+				 	 |> aggregateWindow(every: '${window_interval}', fn: max)
 					 |> group()|> max()|>toInt()
 					 |> drop(columns: ["_measurement","_field", "_start", "_stop","host_id","_time"])'
 _min_ct_stats_number_of_accounts='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r["_measurement"] == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "number_of_accounts")
+					 |> filter(fn: (r) => r._measurement == "cost_tracker_stats" and r["_field"] == "number_of_accounts")
+				 	 |> aggregateWindow(every: '${window_interval}', fn: min)
 					 |> group()|> min()|>toInt()
 					 |> drop(columns: ["_measurement","_field", "_start", "_stop","host_id","_time"])'
 _90_ct_stats_number_of_accounts='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "number_of_accounts")
+					 |> filter(fn: (r) => r._measurement == "cost_tracker_stats" and r["_field"] == "number_of_accounts")
+					 |> aggregateWindow(every: '${window_interval}',  fn: (column, tables=<-) => tables |> quantile(q: 0.90))
 					 |> group()|>quantile(column: "_value", q:0.90)|>toInt()
 					 |> drop(columns: ["_start", "_stop"])'
 _99_ct_stats_number_of_accounts='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					 |> filter(fn: (r) => r._measurement == "cost_tracker_stats")
-					 |> filter(fn: (r) => r["_field"] == "number_of_accounts")
+					 |> filter(fn: (r) => r._measurement == "cost_tracker_stats" and r["_field"] == "number_of_accounts")
+					 |> aggregateWindow(every: '${window_interval}',  fn: (column, tables=<-) => tables |> quantile(q: 0.90))
 					 |> group()|>quantile(column: "_value", q:0.99)|>toInt()
 					 |> drop(columns: ["_start", "_stop"])'
 #blocks fill
 _total_blocks='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
-					|> filter(fn: (r) => r._measurement == "cost_tracker_stats")
-					|> filter(fn: (r) => r["_field"] == "bank_slot")
-					|> group()|> count()
-					|> drop(columns: ["_start", "_stop"])'
+				|> filter(fn: (r) => r._measurement == "cost_tracker_stats" and r["_field"] == "bank_slot")
+    			|> group()
+    			|> aggregateWindow(every: '${window_interval}',  fn: count)
+				|> sum()
+				|> drop(columns: ["_start", "_stop"])'
 					
 _blocks_fill_50='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
   				|> filter(fn: (r) => r._measurement == "cost_tracker_stats")
@@ -186,14 +196,18 @@ _blocks_fill_50='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop
   				|> pivot(rowKey:["_time", "host_id"], columnKey: ["_field"], valueColumn: "_value")
   				|> group()
   				|> filter(fn: (r) => r.block_cost > (48000000.0*0.5))
-  				|> count(column: "bank_slot")'
+				|> aggregateWindow(every: '${window_interval}',  fn: (column, tables=<-) => tables |>  count(column: "bank_slot"))
+  				|> sum(column: "bank_slot")
+				|> drop(columns: ["_start", "_stop"])'
 _blocks_fill_90='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
   				|> filter(fn: (r) => r._measurement == "cost_tracker_stats")
   				|> filter(fn: (r) => r._field == "bank_slot" or r._field == "block_cost")
   				|> pivot(rowKey:["_time", "host_id"], columnKey: ["_field"], valueColumn: "_value")
   				|> group()
   				|> filter(fn: (r) => r.block_cost > (48000000.0*0.9))
-  				|> count(column: "bank_slot")'
+  				|> aggregateWindow(every: '${window_interval}',  fn: (column, tables=<-) => tables |>  count(column: "bank_slot"))
+    			|> sum(column: "bank_slot")
+				|> drop(columns: ["_start", "_stop"])'
 
 declare -A FLUX  # FLUX command
 FLUX[start_slot]=$_start_slot

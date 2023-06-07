@@ -61,11 +61,6 @@ stop_time=$(date -u +%s)
 stop_time_adjust=$(get_time_before $stop_time 5)
 echo ----- stage: DOS report ------
 testnet_version=$(get_testnet_ver $ENDPOINT)
-# ## PASS ENV
-[[ $SLACK_WEBHOOK ]]&&echo "SLACK_WEBHOOK=$SLACK_WEBHOOK" > dos-report-env.sh
-[[ $DISCORD_WEBHOOK ]]&&echo "DISCORD_WEBHOOK=$DISCORD_WEBHOOK" >> dos-report-env.sh
-[[ $DISCORD_AVATAR_URL ]]&&echo "DISCORD_AVATAR_URL=$DISCORD_AVATAR_URL" >> dos-report-env.sh
-
 echo "START_TIME=${start_time}" >> env-artifact.sh
 echo "START_TIME2=${start_time_adjust}" >> env-artifact.sh
 echo "STOP_TIME=${stop_time}" >> env-artifact.sh

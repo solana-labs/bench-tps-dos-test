@@ -41,6 +41,7 @@ client_keypair_path="keypair-configs/$KEYPAIR_FILE"
 duration=$DURATION
 tx_count=$TX_COUNT
 thread_batch_sleep_ms=$THREAD_BATCH_SLEEP_MS
+durable_nonce=$DURABLE_NONCE
 API_V2_HOST="${INFLUX_HOST}/api/v2/query"
 HEADER_AUTH="Authorization: Token ${INFLUX_TOKEN}"
 CURL_TIMEOUT=12
@@ -148,107 +149,132 @@ get_value() {
 		_value="na"
 	fi
 }
+
+declare -A DATAPOINT # collect results
 # write data to benchmark-report-tmp bucket
 # $2:influxdb endpoint $data to write
-write_datapoint() {
-    curl -i -XPOST "$2/write?db=$REPORT_BUCKET&u=scratch_writer&p=topsecret" --data-binary "$1"
-   
+write_datapoint_v2() {
+    curl -i --connect-timeout "${CURL_TIMEOUT}" -XPOST "${API_V2_HOST}/api/v2/write?bucket=${REPORT_BUCKET}/autogen&precision=ns" \
+    --header "${HEADER_AUTH}" \
+    --data-raw "$1"
 }
+
 result_detail=""
 # slot
 result_input=${FLUX_RESULT['start_slot']}
 get_value
 start_slot_txt="start_slot: $_value"
+DATAPOINT[start_slot]="$_value"
 result_input=${FLUX_RESULT['end_slot']}
 get_value
 end_slot_txt="end_slot: $_value"
-
+DATAPOINT[end_slot]="$_value"
 #  TPS
 result_input=${FLUX_RESULT['mean_tx_count']}
 get_value
 mean_tx_count_txt="mean_tps: $_value"
+DATAPOINT[mean_tps]="$_value"
 result_input=${FLUX_RESULT['max_tx_count']}
 get_value
 max_tx_count_txt="max_tps: $_value"
+DATAPOINT[max_tps]="$_value"
 result_input=${FLUX_RESULT['p90_tx_count']}
 get_value
 p90_tx_count_txt="90th_tx_count: $_value"
+DATAPOINT[90th_tx_count]="$_value"
 result_input="${FLUX_RESULT['p99_tx_count']}"
 get_value
 p99_tx_count_txt="99th_tx_count: $_value"
-
+DATAPOINT[99th_tx_count]="$_value"
 # tower distance
 result_input="${FLUX_RESULT['mean_tower_vote_distance']}"
 echo "${FLUX_RESULT['mean_tower_vote_distance']}"
 get_value
 mean_tower_vote_distance_txt="mean_tower_vote_distance: $_value"
+DATAPOINT[mean_tower_vote_distance]="$_value"
 result_input="${FLUX_RESULT['max_tower_vote_distance']}"
 get_value
 max_tower_vote_distance_txt="max_tower_vote_distance: $_value"
+DATAPOINT[max_tower_vote_distance]="$_value"
 result_input="${FLUX_RESULT['min_tower_vote_distance']}"
 get_value
 result_input="${FLUX_RESULT['p90_tower_vote_distance']}"
 get_value
 p90_tower_vote_distance_txt="90th_tower_vote_distance: $_value"
+DATAPOINT[90th_tower_vote_distance]="$_value"
 result_input="${FLUX_RESULT['p99_tower_vote_distance']}"
 get_value
 p99_tower_vote_distance_txt="99th_tower_vote_distance: $_value"
-
+DATAPOINT[99th_tower_vote_distance]="$_value"
 # optimistic_slot_elapsed
 result_input="${FLUX_RESULT['mean_optimistic_slot_elapsed']}"
 get_value
 mean_optimistic_slot_elapsed_txt="mean_optimistic_slot_elapsed: $_value"
+DATAPOINT[mean_optimistic_slot_elapsed]="$_value"
 result_input="${FLUX_RESULT['max_optimistic_slot_elapsed']}"
 get_value
 max_optimistic_slot_elapsed_txt="max_optimistic_slot_elapsed: $_value"
+DATAPOINT[max_optimistic_slot_elapsed]="$_value"
 result_input="${FLUX_RESULT['p90_optimistic_slot_elapsed']}"
 get_value
 p90_optimistic_slot_elapsed_txt="90th_optimistic_slot_elapsed: $_value"
 result_input="${FLUX_RESULT['p99_optimistic_slot_elapsed']}"
+DATAPOINT[90th_optimistic_slot_elapsed]="$_value"
 get_value
 p99_optimistic_slot_elapsed_txt="99th_optimistic_slot_elapsed: $_value"
-
+DATAPOINT[99th_optimistic_slot_elapsed]="$_value"
 # ct_stats_block_cost
 result_input="${FLUX_RESULT['mean_ct_stats_block_cost']}"
 get_value
 mean_ct_stats_block_cost_txt="mean_cost_tracker_stats_block_cost: $_value"
+DATAPOINT[mean_cost_tracker_stats_block_cost]="$_value"
 result_input="${FLUX_RESULT['max_ct_stats_block_cost']}"
 get_value
 max_ct_stats_block_cost_txt="max_cost_tracker_stats_block_cost: $_value"
+DATAPOINT[max_cost_tracker_stats_block_cost]="$_value"
 result_input="${FLUX_RESULT['p90_ct_stats_block_cost']}"
 get_value
 p90_ct_stats_block_cost_txt="90th_cost_tracker_stats_block_cost: $_value"
+DATAPOINT[90th_cost_tracker_stats_block_cost]="$_value"
 result_input="${FLUX_RESULT['p99_ct_stats_block_cost']}"
 get_value
 p99_ct_stats_block_cost_txt="99th_cost_tracker_stats_block_cost: $_value"
+DATAPOINT[99th_cost_tracker_stats_block_cost]="$_value"
 
 # ct_stats_block_cost
 result_input="${FLUX_RESULT['mean_ct_stats_transaction_count']}"
 get_value
 mean_mean_ct_stats_tx_count_txt="mean_cost_tracker_stats_transaction_count: $_value"
+DATAPOINT[mean_cost_tracker_stats_transaction_count]="$_value"
 result_input="${FLUX_RESULT['max_ct_stats_transaction_count']}"
 get_value
 max_mean_ct_stats_tx_count_txt="max_cost_tracker_stats_transaction_count: $_value"
+DATAPOINT[max_cost_tracker_stats_transaction_count]="$_value"
 result_input="${FLUX_RESULT['p90_ct_stats_transaction_count']}"
 get_value
 p90_mean_ct_stats_tx_count_txt="90th_cost_tracker_stats_transaction_count: $_value"
+DATAPOINT[90th_cost_tracker_stats_transaction_count]="$_value"
 result_input="${FLUX_RESULT['p99_ct_stats_transaction_count']}"
 get_value
 p99_mean_ct_stats_tx_count_txt="99th_cost_tracker_stats_transaction_count: $_value"
-
+DATAPOINT[99th_cost_tracker_stats_transaction_count]="$_value"
 # ct_stats_number_of_accounts
 result_input="${FLUX_RESULT['mean_ct_stats_number_of_accounts']}"
 get_value
 mean_ct_stats_num_of_accts_txt="mean_cost_tracker_stats_number_of_accounts: $_value"
+DATAPOINT[mean_cost_tracker_stats_number_of_accounts]="$_value"
 result_input="${FLUX_RESULT['max_ct_stats_number_of_accounts']}"
 get_value
 max_ct_stats_num_of_accts_txt="max_cost_tracker_stats_number_of_accounts: $_value"
+DATAPOINT[max_cost_tracker_stats_number_of_accounts]="$_value"
 result_input="${FLUX_RESULT['p90_ct_stats_number_of_accounts']}"
 get_value
 p90_ct_stats_num_of_accts_txt="90th_cost_tracker_stats_number_of_accounts: $_value"
+DATAPOINT[90th_cost_tracker_stats_number_of_accounts]="$_value"
 result_input="${FLUX_RESULT['p99_ct_stats_number_of_accounts']}"
 get_value
 p99_ct_stats_num_of_accts_txt="99th_cost_tracker_stats_number_of_accounts: $_value"
+DATAPOINT[99th_cost_tracker_stats_number_of_accounts]="$_value"
 
 # # blocks fill
 result_input="${FLUX_RESULT['total_blocks']}"
@@ -258,27 +284,53 @@ if [[ "$_value" == "na" ]];then
 fi
 total_blocks_tmp=$_value
 total_blocks_txt="numb_total_blocks: $_value"
-
+DATAPOINT[numb_total_blocks]="$_value"
 result_input="${FLUX_RESULT['blocks_fill_50']}"
 get_value
 blocks_fill_50_txt="numb_blocks_50_full: $_value"
+DATAPOINT[numb_blocks_50_full]="$_value"
 if [[ "$_value" == "na" || $total_blocks_tmp -eq 0 ]];then
 	percent_value="0%"
+	percent_raw_value=0
 else 
-	echo value : $(echo "($_value/$total_blocks_tmp)*100" | bc)
-	printf -v percent_value "%.0f%s" $(echo "scale=2;($_value/$total_blocks_tmp)*100" | bc) "%"
+	percent_raw_value=$(echo "scale=2;($_value/$total_blocks_tmp)*100" | bc)
+	echo value : $percent_raw_value
+	printf -v percent_value "%.0f%s" $percent_raw_value "%"
 fi
-blocks_fill_50_percent_txt="blocks_50_full: $percent_value"
-
+blocks_fill_50_percent_txt="blocks_50_full: $percent_raw_value"
+DATAPOINT[blocks_50_full]="$percent_raw_value"
 result_input="${FLUX_RESULT['blocks_fill_90']}"
 get_value
 blocks_fill_90_txt="numb_blocks_90_full: $_value"
+DATAPOINT[numb_blocks_90_full]="$_value"
 if [[ "$_value" == "na" || $total_blocks_tmp -eq 0 ]];then
 	percent_value="0%"
-else 
-	printf -v percent_value "%.0f%s" $(echo "scale=2;($_value/$total_blocks_tmp)*100" | bc) "%"
+	percent_raw_value=0
+else
+	percent_raw_value=$(echo "scale=2;($_value/$total_blocks_tmp)*100" | bc)
+	printf -v percent_value "%.0f%s" $percent_raw_value "%"
 fi
 blocks_fill_90_percent_txt="blocks_90_full: $percent_value"
+DATAPOINT[blocks_90_full]="$percent_raw_value"
+
+#write data report to the influx
+
+build="$BUILDKITE_BUILD_ID"
+[[ ! "$BUILDKITE_BUILD_ID" ]] && build="na"
+utc_sec=$(date +%s)
+write_ts=$(echo "scale=2;${utc_sec}*1000000000" | bc)
+
+
+
+for r in "${!DATAPOINT[@]}"
+do
+	write_data="bench_tps_report,build=$build,test_type=$test_type,client=$client,branch=$SOLANA_BUILD_BRANCH,git_commit=$git_commit,cluster_version=$cluster_version,\
+clients_num=$clients_num,duration=$duration,tx_count=$tx_count,thread_batch_sleep_ms=$thread_batch_sleep_ms,durable_nonce=$durable_nonce $r=${DATAPOINT[$r]} $write_ts"
+    write_datapoint_v2 "$write_data" "$API_V2_HOST"
+    
+done
+
+
 
 ## create Grafana link
 gf_from=$(echo "scale=2;${start_time}*1000" | bc)

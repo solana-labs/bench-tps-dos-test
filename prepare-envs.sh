@@ -23,13 +23,13 @@ echo ----- stage: checkout buildkite Steps Env ------
 [[ ! "$TERMINATION_CHECK_INTERVAL" ]]&& TERMINATION_CHECK_INTERVAL=10 && echo TERMINATION_CHECK_INTERVAL env not found, use $TERMINATION_CHECK_INTERVAL
 [[ ! "$GIT_REPO_DIR" ]]&& GIT_REPO_DIR="bench-tps-dos-test"
 [[ ! "$SOLANA_BUILD_BRANCH" ]]&& SOLANA_BUILD_BRANCH=master
-if [[ ! "$GIT_COMMIT" ]];then
+if [[ ! "$SOLANA_GIT_COMMIT" ]];then
     ret=$(git clone https://github.com/solana-labs/solana.git)
     if [[ -d solana ]];then
         cd ./solana
         [[ ! "$SOLANA_BUILD_BRANCH" ]]&& SOLANA_BUILD_BRANCH=master
         ret=$(git checkout $SOLANA_BUILD_BRANCH)
-        GIT_COMMIT=$(git rev-parse HEAD)
+        SOLANA_GIT_COMMIT=$(git rev-parse HEAD)
         cd ../
     else
         echo "can not clone https://github.com/solana-labs/solana.git"

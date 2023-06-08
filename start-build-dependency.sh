@@ -70,8 +70,8 @@ if  [[ "$build_binary" == "true" ]];then
 
     [[ -d "$HOME/solana" ]] || exit 1
     cd "$HOME/solana"
-    if [[ "$GIT_COMMIT" ]];then
-        git checkout "$GIT_COMMIT"
+    if [[ "$SOLANA_GIT_COMMIT" ]];then
+        git checkout "$SOLANA_GIT_COMMIT"
     elif [[ "$SOLANA_BUILD_BRANCH" ]];then
         git checkout "$SOLANA_BUILD_BRANCH"
     fi

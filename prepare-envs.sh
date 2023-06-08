@@ -23,6 +23,19 @@ echo ----- stage: checkout buildkite Steps Env ------
 [[ ! "$TERMINATION_CHECK_INTERVAL" ]]&& TERMINATION_CHECK_INTERVAL=10 && echo TERMINATION_CHECK_INTERVAL env not found, use $TERMINATION_CHECK_INTERVAL
 [[ ! "$GIT_REPO_DIR" ]]&& GIT_REPO_DIR="bench-tps-dos-test"
 [[ ! "$SOLANA_BUILD_BRANCH" ]]&& SOLANA_BUILD_BRANCH=master
+if [[ ! "$GIT_COMMIT" ]];then
+    ret=$(git clone https://github.com/solana-labs/solana.git)
+    if [[ -d solana ]];then
+        cd ./solana
+        [[ ! "$SOLANA_BUILD_BRANCH" ]]&& SOLANA_BUILD_BRANCH=master
+        ret=$(git checkout $SOLANA_BUILD_BRANCH)
+        GIT_COMMIT=$(git rev-parse HEAD)
+        cd ../
+    else
+        echo "can not clone https://github.com/solana-labs/solana.git"
+        exit 1
+    fi
+fi
 [[ ! "$AVAILABLE_ZONE" ]]&& AVAILABLE_ZONE="us-central1-a us-west1-b asia-east1-b europe-west4-a" && echo  no AVAILABLE_ZONE and use $AVAILABLE_ZONE
 [[ ! "$KEYPAIR_DIR" ]]&&KEYPAIR_DIR="keypair-configs"
 [[ ! "$KEYPAIR_FILE" ]]&&KEYPAIR_FILE="large-keypairs.yaml"
@@ -73,6 +86,7 @@ echo "GIT_TOKEN=$GIT_TOKEN" >> env-artifact.sh
 echo "GIT_REPO_DIR=$GIT_REPO_DIR" >> env-artifact.sh
 echo "SOLANA_REPO=$SOLANA_REPO" >> env-artifact.sh
 echo "SOLANA_BUILD_BRANCH=$SOLANA_BUILD_BRANCH" >> env-artifact.sh
+echo "SOLANA_GIT_COMMIT=$SOLANA_GIT_COMMIT" >> env-artifact.sh
 echo "KEEP_INSTANCES=$KEEP_INSTANCES" >> env-artifact.sh
 echo "RUN_BENCH_AT_TS_UTC=$RUN_BENCH_AT_TS_UTC" >> env-artifact.sh
 echo "SLACK_WEBHOOK=$SLACK_WEBHOOK" >> env-artifact.sh

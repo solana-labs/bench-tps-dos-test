@@ -10,7 +10,8 @@ source "env-artifact.sh"
 [[ ! $STOP_TIME ]]&& echo STOP_TIME env not found&&exit 1
 [[ ! $STOP_TIME2 ]]&& echo STOP_TIME2 env not found&&exit 1
 [[ ! $INFLUX_TOKEN ]]&& echo INFLUX_TOKEN env not found&&exit 1
-[[ ! $INFLUX_HOST ]]&& echo INFLUX_HOST env not found, use $INFLUX_HOST&&exit 1
+[[ ! $INFLUX_HOST ]]&& echo INFLUX_HOST env not found&&exit 1
+[[ ! $REPORT_BUCKET ]] && echo REPORT_BUCKET env not found&&exit 1
 # set large data set
 [[ ! $LARGE_DATA_SET ]] && LARGE_DATA_SET="false"
 if [[ -n $BUILDKITE_BUILD_URL ]] ; then
@@ -146,6 +147,12 @@ get_value() {
 	else
 		_value="na"
 	fi
+}
+# write data to benchmark-report-tmp bucket
+# $2:influxdb endpoint $data to write
+write_datapoint() {
+    curl -i -XPOST "$2/write?db=$REPORT_BUCKET&u=scratch_writer&p=topsecret" --data-binary "$1"
+   
 }
 result_detail=""
 # slot

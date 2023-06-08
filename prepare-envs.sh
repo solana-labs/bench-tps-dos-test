@@ -54,15 +54,12 @@ fi
 [[ ! $INFLUX_WINDOW_INTERVAL ]] && INFLUX_WINDOW_INTERVAL="10m"
 [[ ! $INFLUX_WINDOW_INTERVAL_LONG ]] && INFLUX_WINDOW_INTERVAL_LONG="30m"
 [[ ! $ARTIFACT_BUCKET ]] && echo no ARTIFACT_BUCKET && exit 1
-ENV_ARTIFACT_FILE=env-artifact.sh
-export ENV_ARTIFACT_FILE="$ENV_ARTIFACT_FILE"
-
-
 source utils.sh
-echo ----- stage: prepare metrics env ------ 
+echo ----- stage: prepare metrics env for both query and write ------ 
 [[ -f "dos-metrics-env.sh" ]]&& rm dos-metrics-env.sh
 download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" dos-metrics-env.sh ./
 [[ ! -f "dos-metrics-env.sh" ]]&& echo "NO dos-metrics-env.sh found" && exit 1
+[[ ! $REPORT_BUCKET ]] && REPORT_BUCKET="benchmark-report-tmp" && echo no REPORT_BUCKET use "$REPORT_BUCKET"
 
 echo ----- stage: prepare ssh key to dynamic clients ------
 download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" id_ed25519_dos_test ./
@@ -113,4 +110,5 @@ echo "BENCH_TPS_ARTIFACT_FILE=solana-bench-tps" >> env-artifact.sh
 echo "LARGE_DATA_SET=$LARGE_DATA_SET" >> env-artifact.sh
 echo "INFLUX_WINDOW_INTERVAL=$INFLUX_WINDOW_INTERVAL" >> env-artifact.sh
 echo "INFLUX_WINDOW_INTERVAL_LONG=$INFLUX_WINDOW_INTERVAL_LONG" >> env-artifact.sh
+echo "REPORT_BUCKET=$REPORT_BUCKET" >> env-artifact.sh
 cat dos-metrics-env.sh >> env-artifact.sh

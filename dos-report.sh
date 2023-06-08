@@ -33,7 +33,7 @@ fi
 test_type=$TEST_TYPE
 client="tpu"
 [[ "$USE_TPU_CLIENT" == "false" ]] && client="rpc" 
-git_commit=$GIT_COMMIT
+git_commit=$SOLANA_GIT_COMMIT
 cluster_version=$CLUSTER_VERSION
 num_clients=$NUM_CLIENT
 client_keypair_path="keypair-configs/$KEYPAIR_FILE"

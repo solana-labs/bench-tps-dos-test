@@ -154,7 +154,7 @@ declare -A DATAPOINT # collect results
 # write data to benchmark-report-tmp bucket
 # $2:influxdb endpoint $data to write
 write_datapoint_v2() {
-    curl -i --connect-timeout "${CURL_TIMEOUT}" -XPOST "${API_V2_HOST}/api/v2/write?bucket=${REPORT_BUCKET}/autogen&precision=ns" \
+    curl -i --connect-timeout "${CURL_TIMEOUT}" -XPOST "${INFLUX_HOST}/api/v2/write?bucket=${REPORT_BUCKET}/autogen&precision=ns" \
     --header "${HEADER_AUTH}" \
     --data-raw "$1"
 }

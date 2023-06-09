@@ -41,7 +41,6 @@ client_keypair_path="keypair-configs/$KEYPAIR_FILE"
 duration=$DURATION
 tx_count=$TX_COUNT
 thread_batch_sleep_ms=$THREAD_BATCH_SLEEP_MS
-durable_nonce=$DURABLE_NONCE
 API_V2_HOST="${INFLUX_HOST}/api/v2/query"
 HEADER_AUTH="Authorization: Token ${INFLUX_TOKEN}"
 CURL_TIMEOUT=12
@@ -324,7 +323,7 @@ write_ts=$(echo "scale=2;${utc_sec}*1000000000" | bc)
 for r in "${!DATAPOINT[@]}"
 do
 	write_data="bench_tps_report,build=$build,test_type=$test_type,client=$client,branch=$SOLANA_BUILD_BRANCH,git_commit=$git_commit,cluster_version=$cluster_version,\
-clients_num=$clients_num,duration=$duration,tx_count=$tx_count,thread_batch_sleep_ms=$thread_batch_sleep_ms,durable_nonce=$durable_nonce $r=${DATAPOINT[$r]} $write_ts"
+clients_num=$num_clients,duration=$duration,tx_count=$tx_count,thread_batch_sleep_ms=$thread_batch_sleep_ms,durable_nonce=$USE_DURABLE_NONCE $r=${DATAPOINT[$r]} $write_ts"
     write_datapoint_v2 "$write_data" "$API_V2_HOST"
     
 done

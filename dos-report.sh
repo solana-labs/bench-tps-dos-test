@@ -294,10 +294,9 @@ if [[ "$_value" == "na" || $total_blocks_tmp -eq 0 ]];then
 	percent_raw_value=0
 else 
 	percent_raw_value=$(echo "scale=2;($_value/$total_blocks_tmp)*100" | bc)
-	echo value : $percent_raw_value
 	printf -v percent_value "%.0f%s" $percent_raw_value "%"
 fi
-blocks_fill_50_percent_txt="blocks_50_full: $percent_raw_value"
+blocks_fill_50_percent_txt="blocks_50_full: $percent_value"
 DATAPOINT[blocks_50_full]="$percent_raw_value"
 result_input="${FLUX_RESULT['blocks_fill_90']}"
 get_value

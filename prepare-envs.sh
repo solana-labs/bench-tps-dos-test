@@ -49,11 +49,13 @@ fi
 [[ ! "$RUN_BENCH_AT_TS_UTC" ]]&& RUN_BENCH_AT_TS_UTC=0 && echo RUN_BENCH_AT_TS_UTC env not found, use $RUN_BENCH_AT_TS_UTC
 #[[ ! "$SLACK_WEBHOOK" ]]&&[[ ! "$DISCORD_WEBHOOK" ]]&& echo no WEBHOOK found&&exit 1
 # set large data set
-[[ ! $LARGE_DATA_SET ]] && LARGE_DATA_SET="false"
+[[ ! "$LARGE_DATA_SET" ]] && LARGE_DATA_SET="false"
 # INFLUX_WINDOW_INTERVAL & INFLUX_WINDOW_INTERVAL_LONG is used only when LARGE_DATA_SET is true
-[[ ! $INFLUX_WINDOW_INTERVAL ]] && INFLUX_WINDOW_INTERVAL="10m"
-[[ ! $INFLUX_WINDOW_INTERVAL_LONG ]] && INFLUX_WINDOW_INTERVAL_LONG="30m"
-[[ ! $ARTIFACT_BUCKET ]] && echo no ARTIFACT_BUCKET && exit 1
+[[ ! "$INFLUX_WINDOW_INTERVAL" ]] && INFLUX_WINDOW_INTERVAL="10m"
+[[ ! "$INFLUX_WINDOW_INTERVAL_LONG" ]] && INFLUX_WINDOW_INTERVAL_LONG="30m"
+[[ ! "$ARTIFACT_BUCKET" ]] && echo no ARTIFACT_BUCKET && exit 1
+[[ ! "$ENV_ARTIFACT_FILE" ]] && ENV_ARTIFACT_FILE="env-artifact.sh"
+
 source utils.sh
 echo ----- stage: prepare metrics env for both query and write ------ 
 [[ -f "dos-metrics-env.sh" ]]&& rm dos-metrics-env.sh

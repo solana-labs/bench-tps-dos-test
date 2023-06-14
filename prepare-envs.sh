@@ -12,7 +12,6 @@ echo ----- stage: checkout buildkite Steps Env ------
 [[ ! "$TX_COUNT" ]] && echo TX_COUNT env not found && exit 1
 [[ ! "$DURATION" ]] && echo DURATION env not found && exit 1
 [[ ! "$USE_TPU_CLIENT" ]] && USE_TPU_CLIENT="true"
-[[ ! "$TPU_USE_QUIC" ]]&& TPU_USE_QUIC="false" && echo TPU_USE_QUIC env not found, use $TPU_USE_QUIC
 [[ ! "$THREAD_BATCH_SLEEP_MS" ]]&& THREAD_BATCH_SLEEP_MS=10 && echo THREAD_BATCH_SLEEP_MS env not found, use $TPU_DISABLE_QUIC
 [[ ! "$SUSTAINED" ]] && SUSTAINED="false"
 [[ ! "$USE_DURABLE_NONCE" ]] && USE_DURABLE_NONCE="false"
@@ -72,7 +71,6 @@ chmod 600 id_ed25519_dos_test
 echo ----- stage: prepare env-artifact for clients ------
 ## bench-tps Envs
 echo "ENDPOINT=$ENDPOINT" >> env-artifact.sh
-echo "TPU_USE_QUIC=$TPU_USE_QUIC" >> env-artifact.sh
 echo "TX_COUNT=$TX_COUNT" >> env-artifact.sh
 echo "DURATION=$DURATION" >> env-artifact.sh
 echo "USE_TPU_CLIENT=$USE_TPU_CLIENT" >> env-artifact.sh

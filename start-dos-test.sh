@@ -20,8 +20,6 @@ args=(
   --thread-batch-sleep-ms "$THREAD_BATCH_SLEEP_MS"
 )
 # b) use_tpu_client (boolean, if true --use-tpu-client, if false --use-rpc-client)
-# c) tpu_use_quic (boolean, if true --tpu-use-quic, if false nothing) --> false does UDP
-# c.1) quic is default so tpu_use_quic is no longer exist for some branches (master at 8/20)
 # f) tx_count (--tx_count 10000 for the UDP test and --tx_count 2000 per client for the QUIC ) 
 # f1.1) tx_count no longer bound to test type. 8/20/2022
 # g) thread_batch_sleep ( --thread-batch-sleep-ms 1 for UDP --thread-batch-sleep-ms 10 for QUIC)
@@ -31,7 +29,6 @@ args=(
 [[ ! "$DURATION" ]] && DURATION=1800 && echo No DURATION Env , use $DURATION
 [[ ! "$THREAD_BATCH_SLEEP_MS" ]]&& THREAD_BATCH_SLEEP_MS=1 && echo No THREAD_BATCH_SLEEP_MS Env , use $THREAD_BATCH_SLEEP_MS
 [[ "$USE_TPU_CLIENT" == "true" ]] && args+=(--use-tpu-client) || args+=(--use-rpc-client)
-[[ "$TPU_USE_QUIC" == "true" ]] && args+=(--tpu-use-quic)
 [[ "$USE_DURABLE_NONCE" == "true" ]] &&	args+=(--use-durable-nonce)
 # d) sustained (boolean, if true --sustained, if false nothing)
 [[ "$SUSTAINED" == "true" ]]&& args+=(--sustained)

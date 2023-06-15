@@ -16,7 +16,6 @@ This is a implementation for
   NUM_CLIENT: 2
   SLACK_WEBHOOK: ""
   USE_TPU_CLIENT: "false"
-  TPU_USE_QUIC: "true"  #add --tpu-use-quic
   TPU_DISABLE_QUIC: "false" # add --tpu-disable-quic
   DURATION: 1800
   TX_COUNT: 2000
@@ -30,7 +29,7 @@ This is a implementation for
 + SOLANA_BUILD_BRANCH: git checkout branch/version to build solana (same-as-cluster/master/v1.10.32/10.1 ...etc.) default: same-as-cluster
 + AVAILABLE_ZONE: zones to create google cloud instance. (Be aware of quota issue)
 + NUM_CLIENT: 10 (default 10 for QUIC & 1 for UDP)
-+ USE_TPU_CLIENT/TPU_USE_QUIC/DURATION/TX_COUNT/SUSTAINED/THREAD_BATCH_SLEEP_MS arguments for bench-tps
++ USE_TPU_CLIENT/DURATION/TX_COUNT/SUSTAINED/THREAD_BATCH_SLEEP_MS arguments for bench-tps
 + KEYPAIR_FILE: keypair_files to use
 
 ## Flow

@@ -157,8 +157,13 @@ write_datapoint_v2() {
     --header "${HEADER_AUTH}" \
     --data-raw "$1"
 }
-
 result_detail=""
+# time for influx only
+DATAPOINT[start_time]="$start_time"
+DATAPOINT[stop_time]="$stop_time"
+printf -v time_range_str 'time range: %s ~ %s' \
+        "$(date --rfc-3339=seconds -u -d @$start_time)" "$(date --rfc-3339=seconds -u -d @$stop_time)"
+DATAPOINT[range_time_str]="$time_range_str"
 # slot
 result_input=${FLUX_RESULT['start_slot']}
 get_value
@@ -322,7 +327,8 @@ write_ts=$(echo "scale=2;${utc_sec}*1000000000" | bc)
 
 for r in "${!DATAPOINT[@]}"
 do
-	write_data="bench_tps_report,build=$build,test_type=$test_type,client=$client,branch=$SOLANA_BUILD_BRANCH,git_commit=$git_commit,cluster_version=$cluster_version,\
+	measurement=${FIELD_MEASUREMENT[$r]}
+	write_data="$measurement,build=$build,test_type=$test_type,client=$client,branch=$SOLANA_BUILD_BRANCH,git_commit=$git_commit,cluster_version=$cluster_version,\
 clients_num=$num_clients,duration=$duration,tx_count=$tx_count,thread_batch_sleep_ms=$thread_batch_sleep_ms,durable_nonce=$USE_DURABLE_NONCE $r=${DATAPOINT[$r]} $write_ts"
     write_datapoint_v2 "$write_data" "$API_V2_HOST"
     

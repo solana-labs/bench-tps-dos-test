@@ -318,12 +318,13 @@ DATAPOINT[blocks_90_full]="$percent_raw_value"
 
 #write data report to the influx
 
-build="$BUILDKITE_BUILD_ID"
-[[ ! "$BUILDKITE_BUILD_ID" ]] && build="na"
+build="$BUILDKITE_BUILD_NUMBER"
+[[ ! "$BUILDKITE_BUILD_NUMBER" ]] && build="0"
 utc_sec=$(date +%s)
 write_ts=$(echo "scale=2;${utc_sec}*1000000000" | bc)
 
-
+declare -A FIELD_MEASUREMENT
+FIELD_MEASUREMENT[mean_tps]=tps
 
 for r in "${!DATAPOINT[@]}"
 do

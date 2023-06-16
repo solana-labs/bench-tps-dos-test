@@ -261,7 +261,7 @@ declare -A FIELD_MEASUREMENT
 # measurement range
 FIELD_MEASUREMENT[start_utc]=range
 FIELD_MEASUREMENT[end_utc]=range
-FIELD_MEASUREMENT[range_time_str]=range
+FIELD_MEASUREMENT[time_range]=range
 FIELD_MEASUREMENT[start_slot]=range
 FIELD_MEASUREMENT[end_slot]=range
 # tps

@@ -331,7 +331,6 @@ do
 	write_data="$measurement,build=$build,test_type=$test_type,client=$client,branch=$SOLANA_BUILD_BRANCH,git_commit=$git_commit,cluster_version=$cluster_version,\
 clients_num=$num_clients,duration=$duration,tx_count=$tx_count,thread_batch_sleep_ms=$thread_batch_sleep_ms,durable_nonce=$USE_DURABLE_NONCE $r=${DATAPOINT[$r]} $write_ts"
     write_datapoint_v2 "$write_data" "$API_V2_HOST"
-    
 done
 
 

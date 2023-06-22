@@ -159,7 +159,7 @@ write_datapoint_v2() {
 }
 result_detail=""
 # time for influx only
-DATAPOINT[start_utc]="$start_time"
+DATAPOINT[start_time]="$start_time"
 DATAPOINT[stop_time]="$stop_time"
 printf -v time_range_str "\"time range: %s ~ %s\"" \
         "$(date --rfc-3339=seconds -u -d @$start_time)" "$(date --rfc-3339=seconds -u -d @$stop_time)"

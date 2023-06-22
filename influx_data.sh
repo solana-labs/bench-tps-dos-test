@@ -259,7 +259,7 @@ FLUX[blocks_fill_90]=$_blocks_fill_90
 
 declare -A FIELD_MEASUREMENT
 # measurement range
-FIELD_MEASUREMENT[start_utc]=range
+FIELD_MEASUREMENT[start_time]=range
 FIELD_MEASUREMENT[stop_time]=range
 FIELD_MEASUREMENT[time_range]=range
 FIELD_MEASUREMENT[start_slot]=range

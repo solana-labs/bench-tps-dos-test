@@ -161,7 +161,7 @@ result_detail=""
 # time for influx only
 DATAPOINT[start_utc]="$start_time"
 DATAPOINT[stop_time]="$stop_time"
-printf -v time_range_str 'time range: %s ~ %s' \
+printf -v time_range_str "\"time range: %s ~ %s\"" \
         "$(date --rfc-3339=seconds -u -d @$start_time)" "$(date --rfc-3339=seconds -u -d @$stop_time)"
 DATAPOINT[time_range]="$time_range_str"
 # slot
@@ -329,7 +329,7 @@ FIELD_MEASUREMENT[mean_tps]=tps
 for r in "${!DATAPOINT[@]}"
 do
 	measurement=${FIELD_MEASUREMENT[$r]}
-	write_data="$measurement,build=$build,test_type=$test_type,client=$client,branch=$SOLANA_BUILD_BRANCH,git_commit=$git_commit,cluster_version=$cluster_version,\
+	write_data="$measurement,build=$build,client=$client,branch=$SOLANA_BUILD_BRANCH,git_commit=$git_commit,cluster_version=$cluster_version,\
 clients_num=$num_clients,duration=$duration,tx_count=$tx_count,thread_batch_sleep_ms=$thread_batch_sleep_ms,durable_nonce=$USE_DURABLE_NONCE $r=${DATAPOINT[$r]} $write_ts"
     write_datapoint_v2 "$write_data" "$API_V2_HOST"
 done

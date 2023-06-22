@@ -41,7 +41,7 @@ _99_tx_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_ti
     				|> quantile(column: "_value", q:0.99)|>toInt()
     				|> drop(columns: ["_measurement", "_field", "_start", "_stop","count"])'
 
-# tower distance
+# tower_vote_distance
 _mean_tower_vote_distance='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
 					|> filter(fn: (r) => r._measurement == "tower-vote")
 					|> aggregateWindow(every: '${window_interval}',fn: last)
@@ -74,7 +74,7 @@ _99_tower_vote_distance='from(bucket: "tds")|> range(start:'${start_time}' ,stop
 					|> pivot(rowKey:["host_id"], columnKey: ["_field"], valueColumn: "_value")
 					|> map(fn: (r) => ({ r with _value: r.latest - r.root}))
 					|> group()|> quantile(column: "_value", q:0.99)|>toInt()'
-#optimistic_slot_elapsed
+# optimistic_slot_elapsed
 _mean_optimistic_slot_elapsed='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
 					|> filter(fn: (r) => r._measurement == "optimistic_slot_elapsed")
 					|> aggregateWindow(every: '${window_interval}', fn: mean)
@@ -254,3 +254,49 @@ FLUX[p99_ct_stats_number_of_accounts]=$_99_ct_stats_number_of_accounts
 FLUX[total_blocks]=$_total_blocks
 FLUX[blocks_fill_50]=$_blocks_fill_50
 FLUX[blocks_fill_90]=$_blocks_fill_90
+
+# Dos Report write to Influxdb
+
+declare -A FIELD_MEASUREMENT
+# measurement range
+FIELD_MEASUREMENT[start_time]=range
+FIELD_MEASUREMENT[stop_time]=range
+FIELD_MEASUREMENT[time_range]=range
+FIELD_MEASUREMENT[start_slot]=range
+FIELD_MEASUREMENT[end_slot]=range
+# tps
+FIELD_MEASUREMENT[mean_tps]=tps
+FIELD_MEASUREMENT[max_tps]=tps
+FIELD_MEASUREMENT[90th_tx_count]=tps
+FIELD_MEASUREMENT[99th_tx_count]=tps
+# tower_vote
+FIELD_MEASUREMENT[mean_tower_vote_distance]=tower_vote
+FIELD_MEASUREMENT[max_tower_vote_distance]=tower_vote
+FIELD_MEASUREMENT[90th_tower_vote_distance]=tower_vote
+FIELD_MEASUREMENT[99th_tower_vote_distance]=tower_vote
+# optimistic_slot_elapsed
+FIELD_MEASUREMENT[mean_optimistic_slot_elapsed]=optimistic_slot_elapsed
+FIELD_MEASUREMENT[max_optimistic_slot_elapsed]=optimistic_slot_elapsed
+FIELD_MEASUREMENT[90th_optimistic_slot_elapsed]=optimistic_slot_elapsed
+FIELD_MEASUREMENT[99th_optimistic_slot_elapsed]=optimistic_slot_elapsed
+# cost_tracker_stats
+FIELD_MEASUREMENT[mean_cost_tracker_stats_block_cost]=block_cost
+FIELD_MEASUREMENT[max_cost_tracker_stats_block_cost]=block_cost
+FIELD_MEASUREMENT[90th_cost_tracker_stats_block_cost]=block_cost
+FIELD_MEASUREMENT[99th_cost_tracker_stats_block_cost]=block_cost
+# transaction_count
+FIELD_MEASUREMENT[mean_cost_tracker_stats_transaction_count]=transaction_count
+FIELD_MEASUREMENT[max_cost_tracker_stats_transaction_count]=transaction_count
+FIELD_MEASUREMENT[90th_cost_tracker_stats_transaction_count]=transaction_count
+FIELD_MEASUREMENT[99th_cost_tracker_stats_transaction_count]=transaction_count
+# ct_stats_number_of_accounts
+FIELD_MEASUREMENT[mean_cost_tracker_stats_number_of_accounts]=number_of_accounts
+FIELD_MEASUREMENT[max_cost_tracker_stats_number_of_accounts]=number_of_accounts
+FIELD_MEASUREMENT[90th_cost_tracker_stats_number_of_accounts]=number_of_accounts
+FIELD_MEASUREMENT[99th_cost_tracker_stats_number_of_accounts]=number_of_accounts
+# blocks fill
+FIELD_MEASUREMENT[numb_total_blocks]=block_fill
+FIELD_MEASUREMENT[numb_blocks_50_full]=block_fill
+FIELD_MEASUREMENT[numb_blocks_90_full]=block_fill
+FIELD_MEASUREMENT[blocks_50_full]=block_fill
+FIELD_MEASUREMENT[blocks_90_full]=block_fill

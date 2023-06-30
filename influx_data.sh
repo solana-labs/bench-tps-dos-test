@@ -208,6 +208,83 @@ _blocks_fill_90='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop
   				|> aggregateWindow(every: '${window_interval}',  fn: (column, tables=<-) => tables |>  count(column: "bank_slot"))
     			|> sum(column: "bank_slot")
 				|> drop(columns: ["_start", "_stop"])'
+#skip_rate
+_mean_skip_rate='data_max=from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
+				|> filter(fn: (r) => r["_measurement"] == "bank-new_from_parent-heights")
+				|> filter(fn: (r) => r["_field"] == "slot" or r["_field"] == "block_height")
+				|> aggregateWindow(every:'${oversize_window}', fn:max)
+				|> max()
+				|> group(columns: ["host_id"], mode:"by")
+				data_min=from(bucket: "tds")
+				|> range(start:'${start_time}' ,stop:'${stop_time}')
+				|> filter(fn: (r) => r["_measurement"] == "bank-new_from_parent-heights")
+				|> filter(fn: (r) => r["_field"] == "slot" or r["_field"] == "block_height")
+				|> aggregateWindow(every: '${oversize_window}', fn:min)
+				|> max()
+				|> group(columns: ["host_id"], mode:"by")
+				block_max=data_max|> filter(fn: (r) => r["_field"] == "block_height")|> set(key: "_field", value: "block_max")
+				block_min=data_min|> filter(fn: (r) => r["_field"] == "block_height")|> set(key: "_field", value: "block_min")
+				slot_max=data_max|> filter(fn: (r) => r["_field"] == "slot")|> set(key: "_field", value: "slot_max")
+				slot_min=data_min|> filter(fn: (r) => r["_field"] == "slot")|> set(key: "_field", value: "slot_min")
+				union(tables: [block_max, block_min, slot_max, slot_min])
+				|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+				|> map(fn: (r) => ({ r with block_diff: r.block_max - r.block_min }))
+				|> map(fn: (r) => ({ r with slot_diff: r.slot_max - r.slot_min }))
+				|> map(fn: (r) => ({ r with skip_slot: r.slot_diff - r.block_diff }))
+				|> filter(fn: (r) => r.slot_diff > 0)
+				|> map(fn: (r) => ({ r with skip_rate_percent: r.skip_slot*100/r.slot_diff }))
+				|> keep(columns: ["skip_rate_percent"])|> group()|> mean(column:"skip_rate_percent")'
+_max_skip_rate='data_max=from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
+				|> filter(fn: (r) => r["_measurement"] == "bank-new_from_parent-heights")
+				|> filter(fn: (r) => r["_field"] == "slot" or r["_field"] == "block_height")
+				|> aggregateWindow(every:'${oversize_window}', fn:max)
+				|> max()
+				|> group(columns: ["host_id"], mode:"by")
+				data_min=from(bucket: "tds")
+				|> range(start:'${start_time}' ,stop:'${stop_time}')
+				|> filter(fn: (r) => r["_measurement"] == "bank-new_from_parent-heights")
+				|> filter(fn: (r) => r["_field"] == "slot" or r["_field"] == "block_height")
+				|> aggregateWindow(every: '${oversize_window}', fn:min)
+				|> max()
+				|> group(columns: ["host_id"], mode:"by")
+				block_max=data_max|> filter(fn: (r) => r["_field"] == "block_height")|> set(key: "_field", value: "block_max")
+				block_min=data_min|> filter(fn: (r) => r["_field"] == "block_height")|> set(key: "_field", value: "block_min")
+				slot_max=data_max|> filter(fn: (r) => r["_field"] == "slot")|> set(key: "_field", value: "slot_max")
+				slot_min=data_min|> filter(fn: (r) => r["_field"] == "slot")|> set(key: "_field", value: "slot_min")
+				union(tables: [block_max, block_min, slot_max, slot_min])
+				|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+				|> map(fn: (r) => ({ r with block_diff: r.block_max - r.block_min }))
+				|> map(fn: (r) => ({ r with slot_diff: r.slot_max - r.slot_min }))
+				|> map(fn: (r) => ({ r with skip_slot: r.slot_diff - r.block_diff }))
+				|> filter(fn: (r) => r.slot_diff > 0)
+				|> map(fn: (r) => ({ r with skip_rate_percent: r.skip_slot*100/r.slot_diff }))
+				|> keep(columns: ["skip_rate_percent"])|> group()|> max(column:"skip_rate_percent")'
+
+_skip_rate_90='data_max=from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
+				|> filter(fn: (r) => r["_measurement"] == "bank-new_from_parent-heights")
+				|> filter(fn: (r) => r["_field"] == "slot" or r["_field"] == "block_height")
+				|> aggregateWindow(every:'${oversize_window}', fn:max)
+				|> max()
+				|> group(columns: ["host_id"], mode:"by")
+				data_min=from(bucket: "tds")
+				|> range(start:'${start_time}' ,stop:'${stop_time}')
+				|> filter(fn: (r) => r["_measurement"] == "bank-new_from_parent-heights")
+				|> filter(fn: (r) => r["_field"] == "slot" or r["_field"] == "block_height")
+				|> aggregateWindow(every: '${oversize_window}', fn:min)
+				|> max()
+				|> group(columns: ["host_id"], mode:"by")
+				block_max=data_max|> filter(fn: (r) => r["_field"] == "block_height")|> set(key: "_field", value: "block_max")
+				block_min=data_min|> filter(fn: (r) => r["_field"] == "block_height")|> set(key: "_field", value: "block_min")
+				slot_max=data_max|> filter(fn: (r) => r["_field"] == "slot")|> set(key: "_field", value: "slot_max")
+				slot_min=data_min|> filter(fn: (r) => r["_field"] == "slot")|> set(key: "_field", value: "slot_min")
+				union(tables: [block_max, block_min, slot_max, slot_min])
+				|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+				|> map(fn: (r) => ({ r with block_diff: r.block_max - r.block_min }))
+				|> map(fn: (r) => ({ r with slot_diff: r.slot_max - r.slot_min }))
+				|> map(fn: (r) => ({ r with skip_slot: r.slot_diff - r.block_diff }))
+				|> filter(fn: (r) => r.slot_diff > 0)
+				|> map(fn: (r) => ({ r with skip_rate_percent: r.skip_slot*100/r.slot_diff }))
+				|> keep(columns: ["skip_rate_percent"])|> group()|> quantile(column: "skip_rate_percent", q: 0.90)'
 
 declare -A FLUX  # FLUX command
 FLUX[start_slot]=$_start_slot
@@ -255,6 +332,11 @@ FLUX[total_blocks]=$_total_blocks
 FLUX[blocks_fill_50]=$_blocks_fill_50
 FLUX[blocks_fill_90]=$_blocks_fill_90
 
+# skip rate
+FLUX[mean_skip_rate]=$_mean_skip_rate
+FLUX[max_skip_rate]=$_max_skip_rate
+FLUX[skip_rate_90]=$_skip_rate_90
+
 # Dos Report write to Influxdb
 
 declare -A FIELD_MEASUREMENT
@@ -300,3 +382,8 @@ FIELD_MEASUREMENT[numb_blocks_50_full]=block_fill
 FIELD_MEASUREMENT[numb_blocks_90_full]=block_fill
 FIELD_MEASUREMENT[blocks_50_full]=block_fill
 FIELD_MEASUREMENT[blocks_90_full]=block_fill
+
+# skip rate
+FIELD_MEASUREMENT[mean_skip_rate]=skip_rate
+FIELD_MEASUREMENT[max_skip_rate]=skip_rate
+FIELD_MEASUREMENT[skip_rate_90]=skip_rate

@@ -34,7 +34,7 @@ printf -v s_ct_stats_number_of_accts '%s\\n%s\\n%s\\n%s' \
 printf -v blocks_fill '%s\\n%s\\n%s\\n%s\\n%s' \
         "$total_blocks_txt" "$blocks_fill_50_txt" "$blocks_fill_90_txt" "$blocks_fill_50_percent_txt" "$blocks_fill_90_percent_txt"
 printf -v skip_rate '%s\\n%s\\n%s\\n' \
-        "$mean_skip_rate_txt" "$mean_skip_rate_txt" "$skip_rate_90_txt"
+        "$mean_skip_rate_txt" "$max_skip_rate_txt" "$skip_rate_90_txt"
 
 printf -v buildkite_link  '%s' "[Buildkite]($BUILDKITE_BUILD_URL)"
 printf -v grafana_link  '%s' "[Grafana]($gf_url)"

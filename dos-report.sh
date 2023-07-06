@@ -326,7 +326,7 @@ DATAPOINT[mean_skip_rate]="$_value"
 
 result_input="${FLUX_RESULT['max_skip_rate']}"
 get_value
-mean_skip_rate_txt="max_skip_rate: $_value%"
+max_skip_rate_txt="max_skip_rate: $_value%"
 DATAPOINT[max_skip_rate]="$_value"
 
 result_input="${FLUX_RESULT['skip_rate_90']}"

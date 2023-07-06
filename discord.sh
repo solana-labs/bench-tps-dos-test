@@ -33,14 +33,17 @@ printf -v s_ct_stats_number_of_accts '%s\\n%s\\n%s\\n%s' \
         "$mean_ct_stats_num_of_accts_txt" "$max_ct_stats_num_of_accts_txt" "$p90_ct_stats_num_of_accts_txt" "$p99_ct_stats_num_of_accts_txt"
 printf -v blocks_fill '%s\\n%s\\n%s\\n%s\\n%s' \
         "$total_blocks_txt" "$blocks_fill_50_txt" "$blocks_fill_90_txt" "$blocks_fill_50_percent_txt" "$blocks_fill_90_percent_txt"
+printf -v skip_rate '%s\\n%s\\n%s\\n' \
+        "$mean_skip_rate_txt" "$mean_skip_rate_txt" "$skip_rate_90_txt"
+
 printf -v buildkite_link  '%s' "[Buildkite]($BUILDKITE_BUILD_URL)"
 printf -v grafana_link  '%s' "[Grafana]($gf_url)"
 # compose report without link
-printf -v test_report '%s    %s\\n%s\\n**Test Details:**\\n```%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n```' \
+printf -v test_report '%s    %s\\n%s\\n**Test Details:**\\n```%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n```' \
         "$grafana_link" "$buildkite_link" \
         "$test_config" "$time_range" "$slot_range" \
         "$s_tx_count" "$s_tower_vote_dist" "$s_optimistic_slot_elapsed" \
-        "$s_ct_stats_block_cost" "$s_ct_stats_tx_count" "$s_ct_stats_number_of_accts" "$blocks_fill" 
+        "$s_ct_stats_block_cost" "$s_ct_stats_tx_count" "$s_ct_stats_number_of_accts" "$blocks_fill" "$skip_rate"
 
 # compose discord message
 d_username="\"username\": \"${discord_bot_name}\""

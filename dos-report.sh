@@ -321,17 +321,20 @@ DATAPOINT[blocks_90_full]="$percent_raw_value"
 # skip_rate
 result_input="${FLUX_RESULT['mean_skip_rate']}"
 get_value
-mean_skip_rate_txt="mean_skip_rate: $_value%"
+[[ $_value != "na" ]] && printf -v precision "%.2f" "$_value" || precision="na"
+mean_skip_rate_txt="mean_skip_rate: $precision%"
 DATAPOINT[mean_skip_rate]="$_value"
 
 result_input="${FLUX_RESULT['max_skip_rate']}"
 get_value
-max_skip_rate_txt="max_skip_rate: $_value%"
+[[ $_value != "na" ]] && printf -v precision "%.2f" "$_value" || precision="na"
+max_skip_rate_txt="max_skip_rate: $precision%"
 DATAPOINT[max_skip_rate]="$_value"
 
 result_input="${FLUX_RESULT['skip_rate_90']}"
 get_value
-skip_rate_90_txt="skip_rate_90: $_value%"
+[[ $_value != "na" ]] && printf -v precision "%.2f" "$_value" || precision="na"
+skip_rate_90_txt="skip_rate_90_txt: $precision%"
 DATAPOINT[skip_rate_90]="$_value"
 
 #write data report to the influx

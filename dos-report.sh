@@ -337,6 +337,12 @@ get_value
 skip_rate_90_txt="skip_rate_90_txt: $precision%"
 DATAPOINT[skip_rate_90]="$_value"
 
+result_input="${FLUX_RESULT['mean_skip_rate_b4_test']}"
+get_value
+[[ $_value != "na" ]] && printf -v precision "%.2f" "$_value" || precision="na"
+mean_skip_rate_b4_test_txt="mean_skip_rate_b4_test: $precision%"
+DATAPOINT[mean_skip_rate_b4_test]="$_value"
+
 #write data report to the influx
 
 build="$BUILDKITE_BUILD_NUMBER"

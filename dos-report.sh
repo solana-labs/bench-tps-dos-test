@@ -53,6 +53,7 @@ stop_time=$STOP_TIME
 stop_time2=$STOP_TIME2
 
 ## make sure 
+source utils.sh
 source influx_data.sh
 
 query(){

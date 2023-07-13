@@ -53,6 +53,7 @@ stop_time=$STOP_TIME
 stop_time2=$STOP_TIME2
 
 ## make sure 
+source utils.sh
 source influx_data.sh
 
 query(){
@@ -334,8 +335,14 @@ DATAPOINT[max_skip_rate]="$_value"
 result_input="${FLUX_RESULT['skip_rate_90']}"
 get_value
 [[ $_value != "na" ]] && printf -v precision "%.2f" "$_value" || precision="na"
-skip_rate_90_txt="skip_rate_90_txt: $precision%"
+skip_rate_90_txt="skip_rate_90: $precision%"
 DATAPOINT[skip_rate_90]="$_value"
+
+result_input="${FLUX_RESULT['mean_skip_rate_b4_test']}"
+get_value
+[[ $_value != "na" ]] && printf -v precision "%.2f" "$_value" || precision="na"
+mean_skip_rate_b4_test_txt="mean_skip_rate_b4_test: $precision%"
+DATAPOINT[mean_skip_rate_b4_test]="$_value"
 
 #write data report to the influx
 

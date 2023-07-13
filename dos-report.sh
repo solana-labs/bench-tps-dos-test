@@ -335,7 +335,7 @@ DATAPOINT[max_skip_rate]="$_value"
 result_input="${FLUX_RESULT['skip_rate_90']}"
 get_value
 [[ $_value != "na" ]] && printf -v precision "%.2f" "$_value" || precision="na"
-skip_rate_90_txt="skip_rate_90_txt: $precision%"
+skip_rate_90_txt="skip_rate_90: $precision%"
 DATAPOINT[skip_rate_90]="$_value"
 
 result_input="${FLUX_RESULT['mean_skip_rate_b4_test']}"

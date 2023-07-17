@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # slot
+source utils.sh
 _start_slot='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${start_time2}')
 			|> filter(fn: (r) => r._measurement == "optimistic_slot")
  			|> group(columns: ["slot"])|> median()

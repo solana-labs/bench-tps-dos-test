@@ -15,12 +15,13 @@ _end_slot='from(bucket: "tds")|> range(start:'${stop_time2}' ,stop:'${stop_time}
 _mean_tx_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
     				|> filter(fn: (r) => r._measurement == "replay-slot-stats" and r._field == "total_transactions")
     				|> aggregateWindow(every:'${window_interval}', fn: mean)
-    				|> median()|> group() |> mean()'
+    				|> median()|> group() |> mean()|>toInt()'
 
 _max_tx_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
     				|> filter(fn: (r) => r._measurement == "replay-slot-stats" and r._field == "total_transactions")
     				|> aggregateWindow(every:'${window_interval}', fn: max)
-    				|> median()|> group() |> max()'
+    				|> median()|> group() |> max()|>toInt()
+					|>drop(columns: ["_measurement", "_start", "_stop","host_id","_field"])'
 _min_tx_count='from(bucket: "tds")|> range(start:'${start_time}' ,stop:'${stop_time}')
     				|> filter(fn: (r) => r._measurement == "replay-slot-stats" and r._field == "total_transactions")
     				|> aggregateWindow(every:'${window_interval}', fn: min)

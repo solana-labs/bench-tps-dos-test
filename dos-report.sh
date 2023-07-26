@@ -23,6 +23,7 @@ else
 fi
 ## setup window interval for query
 window_interval="10s"
+window_interval_long="10s"
 oversize_window=$(echo "${DURATION}+300" | bc)
 printf -v oversize_window "%ss" "$oversize_window"
 if [[ "$LARGE_DATA_SET" == "true" ]];then

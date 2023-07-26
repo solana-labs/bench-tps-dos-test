@@ -61,3 +61,32 @@ get_time_before() {
 	outcom_in_sec=$(echo $1 - $2 | bc) 
     echo $outcom_in_sec
 }
+
+#!/bin/bash
+
+# extract_time: extract number and unit from string like 10s, 10m, 10h
+# argv1: string like 10s, 10m, 10h
+# return: use $duration_in_seconds or return value $?
+function extract_time_in_sec {
+    if [[ $1 =~ ^([0-9]+)([smh])$ ]]; then
+        number="${BASH_REMATCH[1]}"
+        unit="${BASH_REMATCH[2]}"
+
+        case "$unit" in
+            s)
+                duration_in_seconds="$number"
+                ;;
+            m)
+                duration_in_seconds=$((number * 60))
+                ;;
+            h)
+                duration_in_seconds=$((number * 3600))
+                ;;
+            *)
+            duration_in_seconds=0
+                ;;
+        esac
+        echo "$duration_in_seconds"
+    fi
+}
+

@@ -62,7 +62,6 @@ get_time_before() {
     echo $outcom_in_sec
 }
 
-#!/bin/bash
 
 # extract_time: extract number and unit from string like 10s, 10m, 10h
 # argv1: string like 10s, 10m, 10h

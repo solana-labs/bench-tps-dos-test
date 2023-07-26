@@ -2,7 +2,8 @@
 ## solana-bench-tps config
 set -ex
 # read env
-source "env-artifact.sh" 
+source "env-artifact.sh"
+source "utils.sh"
 # check ENV
 # no env , exit
 [[ ! $START_TIME ]]&& echo START_TIME env not found&&exit 1
@@ -21,8 +22,9 @@ else
     BUILDKITE_BUILD_URL="https://buildkite.com/solana-labs/"
 fi
 ## setup window interval for query
-window_interval="10s" 
-window_interval_long="10s"
+window_interval_in_sec=10
+window_interval="${window_interval_in_sec}s"
+window_interval="10s"
 oversize_window=$(echo "${DURATION}+300" | bc)
 printf -v oversize_window "%ss" "$oversize_window"
 if [[ "$LARGE_DATA_SET" == "true" ]];then
@@ -177,23 +179,31 @@ result_input=${FLUX_RESULT['end_slot']}
 get_value
 end_slot_txt="end_slot: $_value"
 DATAPOINT[end_slot]="$_value"
-#  TPS
+# TPS : the query result is tps*{$window_interval}, so we need to divide {$window_interval} to get the real tps
 result_input=${FLUX_RESULT['mean_tx_count']}
 get_value
-mean_tx_count_txt="mean_tps: $_value"
-DATAPOINT[mean_tps]="$_value"
+extract_time_in_sec "${window_interval}"
+[[ ${duration_in_seconds} -eq "0" ]]&&  tps="0" || tps=$(echo "scale=0;$_value/${duration_in_seconds}"|bc)
+mean_tx_count_txt="mean_tps: $tps"
+DATAPOINT[mean_tps]="$tps"
 result_input=${FLUX_RESULT['max_tx_count']}
 get_value
-max_tx_count_txt="max_tps: $_value"
-DATAPOINT[max_tps]="$_value"
+extract_time_in_sec "${window_interval}"
+[[ ${duration_in_seconds} -eq "0" ]]&&  tps="0" || tps=$(echo "scale=0;$_value/${duration_in_seconds}"|bc)
+max_tx_count_txt="max_tps: $tps"
+DATAPOINT[max_tps]="$tps"
 result_input=${FLUX_RESULT['p90_tx_count']}
 get_value
-p90_tx_count_txt="90th_tx_count: $_value"
-DATAPOINT[90th_tx_count]="$_value"
+extract_time_in_sec "${window_interval}"
+[[ ${duration_in_seconds} -eq "0" ]]&&  tps="0" || tps=$(echo "scale=0;$_value/${duration_in_seconds}"|bc)
+p90_tx_count_txt="90th_tx_count: $tps"
+DATAPOINT[90th_tx_count]="$tps"
 result_input="${FLUX_RESULT['p99_tx_count']}"
 get_value
-p99_tx_count_txt="99th_tx_count: $_value"
-DATAPOINT[99th_tx_count]="$_value"
+extract_time_in_sec "${window_interval}"
+tps=$(echo "scale=0;$_value/${duration_in_seconds}"|bc)
+p99_tx_count_txt="99th_tx_count: $tps"
+DATAPOINT[99th_tx_count]="$tps"
 # tower distance
 result_input="${FLUX_RESULT['mean_tower_vote_distance']}"
 echo "${FLUX_RESULT['mean_tower_vote_distance']}"

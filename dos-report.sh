@@ -22,8 +22,6 @@ else
     BUILDKITE_BUILD_URL="https://buildkite.com/solana-labs/"
 fi
 ## setup window interval for query
-window_interval_in_sec=10
-window_interval="${window_interval_in_sec}s"
 window_interval="10s"
 oversize_window=$(echo "${DURATION}+300" | bc)
 printf -v oversize_window "%ss" "$oversize_window"

@@ -62,11 +62,14 @@ function create_machines() {
         create_gce "$zone"
 		(( count+=1 )) || true
         echo "gc instance is created in $zone"
+
+				# always update `.out` files to keep the state up-to-date.
+				echo "${instance_ip[@]}" > instance_ip.out
+				echo "${instance_name[@]}" > instance_name.out
+				echo "${instance_zone[@]}" > instance_zone.out
+
         sleep $create_interval # avoid too quick build
     done
-    echo "${instance_ip[@]}" > instance_ip.out
-    echo "${instance_zone[@]}" > instance_name.out
-    echo "${instance_zone[@]}" > instance_zone.out
 }
 
 function append_machines() {

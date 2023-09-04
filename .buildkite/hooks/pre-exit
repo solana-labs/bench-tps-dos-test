@@ -14,12 +14,11 @@ set -e
     exit 0
   fi
 
-  # shellcheck source=create-instance.sh
-  source create-instance.sh
-
-  read -a instance_ip <instance_ip.out
   read -a instance_name <instance_name.out
   read -a instance_zone <instance_zone.out
+  for idx in "${!instance_name[@]}"; do
+    gcloud compute instances delete --quiet "${instance_name[$idx]}" --zone="${instance_zone[$idx]}" &
+  done
 
-  delete_machines
+  wait
 )

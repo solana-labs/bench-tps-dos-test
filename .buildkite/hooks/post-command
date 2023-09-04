@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -e
+
+(
+  echo "~~~ safe check for machines"
+  if [[ "$KEEP_INSTANCES" == "true" ]]; then
+    echo "(skip): KEEP_INSTANCES = $KEEP_INSTANCES"
+    exit 0
+  fi
+
+  if [ ! -e instance_ip.out ]; then
+    echo "(skip): instance_ip.out doesn't exist"
+    exit 0
+  fi
+
+  # shellcheck source=create-instance.sh
+  source create-instance.sh
+
+  read -a instance_ip <instance_ip.out
+  read -a instance_name <instance_name.out
+  read -a instance_zone <instance_zone.out
+
+  delete_machines
+)

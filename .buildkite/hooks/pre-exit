@@ -17,6 +17,7 @@ set -e
   read -a instance_name <instance_name.out
   read -a instance_zone <instance_zone.out
   for idx in "${!instance_name[@]}"; do
+    echo "deleting ${instance_name[$idx]} ..."
     gcloud compute instances delete --quiet "${instance_name[$idx]}" --zone="${instance_zone[$idx]}" &
   done
 

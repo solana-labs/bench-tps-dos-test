@@ -62,11 +62,14 @@ function create_machines() {
         create_gce "$zone"
 		(( count+=1 )) || true
         echo "gc instance is created in $zone"
+
+				# always update `.out` files to keep the state up-to-date.
+				echo "${instance_ip[@]}" > instance_ip.out
+				echo "${instance_name[@]}" > instance_name.out
+				echo "${instance_zone[@]}" > instance_zone.out
+
         sleep $create_interval # avoid too quick build
     done
-    echo "${instance_ip[@]}" > instance_ip.out
-    echo "${instance_zone[@]}" > instance_name.out
-    echo "${instance_zone[@]}" > instance_zone.out
 }
 
 function append_machines() {
@@ -88,11 +91,15 @@ function append_machines() {
 
 
 function delete_machines(){
-    echo ----- stage: remove gc instances ------
+  echo ----- stage: remove gc instances ------
 	echo instance_name : "${instance_name[@]}"
 	echo instance_zone : "${instance_zone[@]}"
 	for idx in "${!instance_name[@]}"
 	do
 		gcloud compute instances delete --quiet "${instance_name[$idx]}" --zone="${instance_zone[$idx]}"
 	done
+
+	rm instance_ip.out
+	rm instance_name.out
+	rm instance_zone.out
 }

@@ -11,6 +11,7 @@ source $HOME/env-artifact.sh
 [[ ! "$KEYPAIR_FILE" ]]&& KEYPAIR_FILE=large-keypairs.yaml && echo No KEYPAIR_FILE Env , use $KEYPAIR_FILE
 #### bench-tps ENV ####
 echo --- stage:setup bench-tps parameters ---
+CLIENT_NODE_IP=$(cat "$HOME/${CLIENT_NODE_IP_FILE}")
 args=(
   -u "$ENDPOINT"
   --identity "$HOME/$ID_FILE"
@@ -18,6 +19,8 @@ args=(
   --duration "$TX_COUNT"
   --tx_count "$DURATION" 
   --thread-batch-sleep-ms "$THREAD_BATCH_SLEEP_MS"
+  --client-node-id "$HOME/${CLIENT_NODE_ID_FILE}"
+  --bind-address "${CLIENT_NODE_IP}"
 )
 # b) use_tpu_client (boolean, if true --use-tpu-client, if false --use-rpc-client)
 # f) tx_count (--tx_count 10000 for the UDP test and --tx_count 2000 per client for the QUIC ) 

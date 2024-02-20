@@ -54,6 +54,8 @@ fi
 [[ ! "$INFLUX_WINDOW_INTERVAL_LONG" ]] && INFLUX_WINDOW_INTERVAL_LONG="30m"
 [[ ! "$ARTIFACT_BUCKET" ]] && echo no ARTIFACT_BUCKET && exit 1
 [[ ! "$ENV_ARTIFACT_FILE" ]] && ENV_ARTIFACT_FILE="env-artifact.sh"
+[[ ! "$CLIENT_NODE_ID_FILE" ]] && CLIENT_NODE_ID_FILE="validator_identity.json" && echo "CLIENT_NODE_ID_FILE no found , use $CLIENT_NODE_ID_FILE"
+[[ ! "$CLIENT_NODE_IP_FILE" ]] && CLIENT_NODE_IP_FILE="validator_ip.txt" && echo "CLIENT_NODE_IP_FILE no found , use $CLIENT_NODE_IP_FILE"
 
 source utils.sh
 echo ----- stage: prepare metrics env for both query and write ------ 
@@ -111,4 +113,6 @@ echo "LARGE_DATA_SET=$LARGE_DATA_SET" >> env-artifact.sh
 echo "INFLUX_WINDOW_INTERVAL=$INFLUX_WINDOW_INTERVAL" >> env-artifact.sh
 echo "INFLUX_WINDOW_INTERVAL_LONG=$INFLUX_WINDOW_INTERVAL_LONG" >> env-artifact.sh
 echo "REPORT_BUCKET=$REPORT_BUCKET" >> env-artifact.sh
+echo "CLIENT_NODE_ID_FILE=$CLIENT_NODE_ID_FILE" >> env-artifact.sh
+echo "CLIENT_NODE_IP_FILE=$CLIENT_NODE_IP_FILE" >> env-artifact.sh
 cat dos-metrics-env.sh >> env-artifact.sh

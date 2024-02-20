@@ -108,4 +108,8 @@ download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" "$KEYPAIR_TAR_FILE" "$HOME"
 tar -xzvf $KEYPAIR_TAR_FILE
 [[ ! -f "$HOME/keypair-configs/$KEYPAIR_FILE" ]]&&echo no "$KEYPAIR_FILE" file && exit 1
 cp "$HOME/keypair-configs/$KEYPAIR_FILE" "$HOME"
+download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" "${CLIENT_NODE_ID_FILE}" "$HOME"
+[[ ! -f "${CLIENT_NODE_ID_FILE}" ]]&& echo "no ${CLIENT_NODE_ID_FILE} found" && exit 1
+download_file "gs://$DOS_BENCH_TPS_PRIVATE_BUCKET" "${CLIENT_NODE_IP_FILE}" ./
+[[ ! -f "${CLIENT_NODE_IP_FILE}" ]]&& echo "no ${CLIENT_NODE_IP_FILE} found" && exit 1
 exit 0
